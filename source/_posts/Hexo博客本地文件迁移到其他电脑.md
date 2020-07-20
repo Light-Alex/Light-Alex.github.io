@@ -115,6 +115,7 @@ git clone git@github.com:username/username.github.io.git
 
 ```bash
 cd xxx.github.io
+# 只运行 npm install 就行了，会自动安装全部的依赖
 npm install
 npm install --save hexo-deployer-git
 ```
