@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hexo+Next搭建个人博客</title>
+    <url>/2020/07/19/Hexo-Next%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<p><strong>参考链接：</strong></p>
+<p><a href="https://lvxuefei.top/Hexo%E7%AB%99%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E/" target="_blank" rel="noopener">Hexo站点配置文件说明</a></p>
+<p><a href="https://lvxuefei.top/%E5%88%A9%E7%94%A8Hexo-Next%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%EF%BC%88%E4%B8%80%EF%BC%89-%E5%88%9D%E5%A7%8B%E5%8C%96demo/" target="_blank" rel="noopener">初始化demo</a></p>
+<p><a href="https://lvxuefei.top/%E5%88%A9%E7%94%A8Hexo-Next%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%EF%BC%88%E4%BA%8C%EF%BC%89-%E4%BD%BF%E7%94%A8next%E4%B8%BB%E9%A2%98/" target="_blank" rel="noopener">使用 next 主题</a></p>
+<p><a href="https://lvxuefei.top/%E5%88%A9%E7%94%A8Hexo-Next%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%EF%BC%88%E4%B8%89%EF%BC%89-%E4%BC%98%E5%8C%96-%E5%90%84%E7%A7%8Dtips%E3%80%81%E9%BB%91%E7%A7%91%E6%8A%80%EF%BC%8C%E4%B8%8D%E6%96%AD%E6%9B%B4%E6%96%B0/" target="_blank" rel="noopener">优化 (各种 tips、黑科技，不断更新)</a></p>
+]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Next</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git查看或修改用户名和邮箱并实现GitHub免密登录</title>
     <url>/2020/07/19/Git%E6%9F%A5%E7%9C%8B%E6%88%96%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E9%82%AE%E7%AE%B1%E5%B9%B6%E5%AE%9E%E7%8E%B0GitHub%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95/</url>
     <content><![CDATA[<h1 id="查看用户名"><a href="#查看用户名" class="headerlink" title="查看用户名"></a>查看用户名</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config user.name</span><br></pre></td></tr></table></figure>
@@ -40,23 +57,6 @@
       <tags>
         <tag>Git</tag>
         <tag>GitHub</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo+Next搭建个人博客</title>
-    <url>/2020/07/19/Hexo-Next%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[<p><strong>参考链接：</strong></p>
-<p><a href="https://lvxuefei.top/Hexo%E7%AB%99%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E/" target="_blank" rel="noopener">Hexo站点配置文件说明</a></p>
-<p><a href="https://lvxuefei.top/%E5%88%A9%E7%94%A8Hexo-Next%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%EF%BC%88%E4%B8%80%EF%BC%89-%E5%88%9D%E5%A7%8B%E5%8C%96demo/" target="_blank" rel="noopener">初始化demo</a></p>
-<p><a href="https://lvxuefei.top/%E5%88%A9%E7%94%A8Hexo-Next%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%EF%BC%88%E4%BA%8C%EF%BC%89-%E4%BD%BF%E7%94%A8next%E4%B8%BB%E9%A2%98/" target="_blank" rel="noopener">使用 next 主题</a></p>
-<p><a href="https://lvxuefei.top/%E5%88%A9%E7%94%A8Hexo-Next%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%EF%BC%88%E4%B8%89%EF%BC%89-%E4%BC%98%E5%8C%96-%E5%90%84%E7%A7%8Dtips%E3%80%81%E9%BB%91%E7%A7%91%E6%8A%80%EF%BC%8C%E4%B8%8D%E6%96%AD%E6%9B%B4%E6%96%B0/" target="_blank" rel="noopener">优化 (各种 tips、黑科技，不断更新)</a></p>
-]]></content>
-      <categories>
-        <category>Hexo</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-        <tag>Next</tag>
       </tags>
   </entry>
   <entry>
@@ -492,13 +492,13 @@
 <td>true</td>
 </tr>
 </tbody></table>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 通过多个条件</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="string">`student`</span> <span class="keyword">SET</span> <span class="string">`name`</span>=<span class="string">'abcd'</span> <span class="keyword">WHERE</span> <span class="keyword">NAME</span>=<span class="string">'aaaaa'</span> <span class="keyword">AND</span> sex=<span class="string">'男'</span> </span><br><span class="line"><span class="comment">-- 修改多个属性  用英文逗号 ,  隔开</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="string">`student`</span> <span class="keyword">SET</span> <span class="string">`birthday`</span>=<span class="keyword">CURRENT_DATE</span>,gradeid=<span class="number">3</span> <span class="keyword">WHERE</span> <span class="keyword">NAME</span>=<span class="string">'cc'</span></span><br><span class="line"><span class="comment">-- 通过变量赋值</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="string">`student`</span> <span class="keyword">SET</span> <span class="keyword">SET</span> <span class="string">`birthday`</span>=<span class="keyword">CURRENT_DATE</span> <span class="keyword">WHERE</span> <span class="keyword">NAME</span>=<span class="string">'cc'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 通过多个条件</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="string">`student`</span> <span class="keyword">SET</span> <span class="string">`name`</span>=<span class="string">'abcd'</span> <span class="keyword">WHERE</span> <span class="keyword">NAME</span>=<span class="string">'aaaaa'</span> <span class="keyword">AND</span> sex=<span class="string">'男'</span> </span><br><span class="line"><span class="comment">-- 修改多个属性  用英文逗号 ,  隔开</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="string">`student`</span> <span class="keyword">SET</span> <span class="string">`birthday`</span>=<span class="keyword">CURRENT_DATE</span>,gradeid=<span class="number">3</span> <span class="keyword">WHERE</span> <span class="keyword">NAME</span>=<span class="string">'cc'</span></span><br><span class="line"><span class="comment">-- 通过变量赋值</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="string">`student`</span> <span class="keyword">SET</span> <span class="string">`birthday`</span>=<span class="keyword">CURRENT_DATE</span> <span class="keyword">WHERE</span> <span class="keyword">NAME</span>=<span class="string">'cc'</span></span><br></pre></td></tr></table></figure>
 
 <p> 注意：</p>
 <ul>
 <li>写SQL语句时数据库的字段（列），尽量加``</li>
 <li>修改的时候如果没有条件，会修改所有的值</li>
-<li>value（新赋的值），可以是一个具体的之，也可以是一个变量  <ul>
+<li>value（新赋的值），可以是一个具体的值，也可以是一个变量  <ul>
 <li>例如：  SET <code>birthday</code>=CURRENT_DATE</li>
 </ul>
 </li>
