@@ -390,7 +390,7 @@ CREATE TABLE IF NOT EXISTS `student`(
 
 ![image-20200606192936642](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200606192936642.png)
 
-* 删除有外键关系的表的时候，先删除引用别人的表，再删除被引用的表
+* 删除有外键关系的表的时候，先删除引用别人的表（从表），再删除被引用的表（主表）
 
 #### 2.方式二
 
@@ -456,7 +456,7 @@ update 修改谁  set 字段=新值（修改的条件）
 -- 修改学生名字
 -- UPDATE 表名 SET 字段名='新值' WHERE [条件]
 update `student` set name='伯格曼' where id=5
--- 在不指定条件的情况下 会删除所有的表
+-- 在不指定条件的情况下 会修改所有的表
 
 -- UPDATE 表名 SET 字段一='新值'，字段二='新值'，字段三='新值' WHERE [条件]
 UPDATE `student` SET NAME='洪尚秀',pwd='123456',address='韩国' WHERE id=4
@@ -471,7 +471,7 @@ UPDATE `student` SET NAME='洪尚秀',pwd='123456',address='韩国' WHERE id=4
 | >,<,>=,<=      | …          | …           | …     |
 | between… and … | 在某个区间 | [1,3]       |       |
 | and            | &&         | 1=2 and 1<2 | false |
-| or             | \|\|       | 1=2 and 1<2 | true  |
+| or             | \|\|       | 1=2 or 1<2  | true  |
 
 ```sql
 -- 通过多个条件
@@ -479,14 +479,20 @@ UPDATE `student` SET `name`='abcd' WHERE NAME='aaaaa' AND sex='男'
 -- 修改多个属性  用英文逗号 ,  隔开
 UPDATE `student` SET `birthday`=CURRENT_DATE,gradeid=3 WHERE NAME='cc'
 -- 通过变量赋值
-UPDATE `student` SET SET `birthday`=CURRENT_DATE WHERE NAME='cc'
+UPDATE `student` SET `birthday`=CURRENT_DATE WHERE NAME='cc'
 ```
 
- 注意：
+语法：
+
+``` sql
+update 表名 set column_name=value, [column_name = value, ...] where [条件]
+```
+
+注意：
 
 * 写SQL语句时数据库的字段（列），尽量加``
-* 修改的时候如果没有条件，会修改所有的值
-* value（新赋的值），可以是一个具体的之，也可以是一个变量  
+* 修改的时候如果没有条件，会修改所有行该字段的值
+* value（新赋的值），可以是一个具体的值，也可以是一个变量  
   *  例如：  SET `birthday`=CURRENT_DATE
 
 ### 3.5.删除
