@@ -538,7 +538,7 @@
 
 <p>语法：<code>select 字段, ... from 表</code></p>
 <blockquote>
-<p>有的时候，列名字不是那么的见名知意。我们起别名 使用 AS   用法：字段名 as 别名    表名 as 别名       </p>
+<p>有的时候，列名字不是那么的见名知意。我们起别名 使用 AS 用法：字段名 as 别名　表名 as 别名       </p>
 </blockquote>
 <p>==去重: distinct==</p>
 <p>作用：去掉select查询出来中重复的数据，值保留一条</p>
