@@ -3,6 +3,7 @@ title: Mysql学习笔记
 date: 2020-07-18 22:14:51
 tags: ['狂神']
 categories: ['Mysql']
+typora-root-url: ..
 ---
 
 # MySQL
@@ -260,7 +261,7 @@ CREATE TABLE `student` (
 DESC student   -- 显示表的结构
 ```
 
-![image-20200606181422911](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200606181422911.png)
+![表结构](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%A1%A8%E7%BB%93%E6%9E%84.png)
 
 ### 2.5.数据库引擎
 
@@ -333,7 +334,7 @@ ALTER TABLE teacher1 CHANGE age age1 INT(3)   -- 重命名
 ALTER TABLE teacher1 DROP age1
 ```
 
-#### 2.删除
+#### 2.删除表
 
 ```sql
 -- 删除表 （如果表存在再删除）
@@ -381,14 +382,14 @@ CREATE TABLE IF NOT EXISTS `student`(
     `address` VARCHAR(100) DEFAULT NULL COMMENT '家庭住址', 
     `email` VARCHAR(50) DEFAULT NULL COMMENT '邮箱',
     PRIMARY KEY(`id`),	
-    KEY `FK_gradeid` (`gradeid`),
+    KEY `FK_gradeid` (`gradeid`),  -- 第一种添加索引的方式
     CONSTRAINT `FK_gradeid` FOREIGN KEY (`gradeid`) REFERENCES `grade`(`gradeid`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8   
 ```
 
+外键：
 
-
-![image-20200606192936642](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200606192936642.png)
+![外键](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%A4%96%E9%94%AE.png)
 
 * 删除有外键关系的表的时候，先删除引用别人的表（从表），再删除被引用的表（主表）
 
@@ -495,11 +496,18 @@ update 表名 set column_name=value, [column_name = value, ...] where [条件]
 * value（新赋的值），可以是一个具体的值，也可以是一个变量  
   *  例如：  SET `birthday`=CURRENT_DATE
 
+```sql
+update `student` set `birthday`=current_time where `name`='长江7号' and sex='女';
+```
+
 ### 3.5.删除
 
 ```sql
--- 删除数据 （避免这样写）
-DELETE FROM `student` WHERE id=11   -- 不会影响自增
+-- 清空整张表 （避免这样写，会全部删除）
+delete from `student`; -- 不会影响自增
+
+-- 删除指定数据
+DELETE FROM `student` WHERE id=11;   -- 不会影响自增
 
 -- 清空某张表
 TRUNCATE `student`   -- 自增会归零
@@ -512,51 +520,93 @@ delete 和 TRUNCATE 区别
   * TRUNCATE  重新设置 自增会归零
   * TRUNCATE  不会影响事务
 
-delete后重启数据库，现象
+```sql
+-- 测试delete 和 truncate 的区别
+CREATE TABLE `test`(
+    `id` INT(4) NOT NULL AUTO_INCREMENT,
+    `coll` VARCHAR(20) NOT NULL,
+    PRIMARY KEY(`id`)
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+INSERT INTO `test`(`coll`) VALUES ('1'),('2'),('3');  
+
+DELETE FROM `test`;  -- 不会影响自增
+
+TRUNCATE `test`; -- 重置自增, 自增会归零
+```
+
+`了解`：`delete删除的问题`，重启数据库，现象：
 
 * InnoDB 自增会从1开始（存储在内存中，断电即失）
 * MyISAM 继续从上一个自增量开始（存储在文件中，不会丢失）
 
 ## 4.DQL查询数据【最重点】
 
-
-
-### 4.1DQL
+### 4.1.DQL
 
 （Data Query Language：数据查询语言）
 
 * 所有的查询操作都用它  select
 * 简单的查询，复杂的查询都能做
-* ==数据库中最核心的语言==
+* ==数据库中最核心的语言，最重要的语句==
 * 使用频率最高的语句
 
-### 4.2.指定查询字段
+### 4.2select语法
+
+```sql
+select [all | distinct]
+{* | table.* | [table.field1 [as alias1] [,table.field2 [as alias2]][,...]]}
+from table_name [as table_alias]
+[left | right | innner join table_name2 [as table2_alias] on ...]  --连接查询
+[where ...] -- 指定结果需满足的条件(根据条件对结果进行筛选)
+[group by ...] -- 指定结果按照哪几个字段进行分组
+[having ...] -- 过滤分组的记录必须满足的次要条件
+[order by 字段名 ...] -- 指定查询记录按一个或多个条件排序
+[limit {[offset(起始位置),]row_coun(显示行数)t | row_countOFFSET offset}];
+```
+
+**注意：[]括号代表可选的，{}括号代表必选的**
+
+
+
+### 4.3.指定查询字段
 
 ==语法：SELECT 字段 FROM 表==
 
 ```sql
--- 查询所有学生
+-- 查询所有学生 select 字段 from 表
 SELECT * FROM student
+
 -- 指定字段查询
 SELECT `studentno`,`studentname` FROM student
--- 给结果其别名  AS 可以给字段其别名 也可以给表起别名
+
+-- 别名：给结果起一个别名  AS 可以给字段起别名 也可以给表起别名
 SELECT `studentno` AS 学号,`studentname` AS 学生姓名 FROM student AS 学生表
--- 函数 CONCAT(a,b) 
+
+-- 函数 CONCAT(a,b) ：拼接字符串
 SELECT 
 CONCAT('姓名：',`studentname`) 
 AS 新的名字
 FROM student
 ```
 
+语法：`select 字段, ... from 表`
+
+> 有时候，列名字不是那么的见名知意。我们起别名，使用 AS　用法：字段名 as 别名 表名 as 别名       
+
+
+
 ==去重: distinct==
 
-作用：去掉select查询出来中重复的数据，值保留一条
+作用：去除select查询出来的结果中重复的数据，重复数据只显示一条
 
 ```sql
--- 查询哪一些同学参加了考试
-select * from result  -- 查询全部的考试成绩
+-- 查询全部的考试成绩
+select * from result
+
 -- 查询哪些同学参加了考试
 select `studentno` from result
+
 -- distinct 去重
 select distinct `studentno` from result
 ```
@@ -574,110 +624,193 @@ SELECT `studentno`,`studentresult` FROM `result`
 SELECT `studentno`,`studentresult`+1 AS '加一分后' FROM `result`
 ```
 
-数据库中的表达式：文本值，列，Null，函数。计算表达式，系统变量，
+数据库中的表达式：文本值，列，Null，函数，计算表达式，系统变量……
 
 select ==表达式== from 表
 
-### 4.3.where条件子句
+### 4.4.where条件子句
 
-作用：检索数据中符合条件的值
+作用：检索数据中`符合条件`的值
 
-搜索的条件有一个或者多个表达式组成！ 结果是 布尔值
+搜索的条件由一个或者多个表达式组成！ 结果是布尔值
 
 > 逻辑运算符
 
+| 运算符      | 语法               | 描述                             |
+| ----------- | ------------------ | -------------------------------- |
+| and　&&     | ａ and b 　a && b  | 逻辑与，两个都为真，结果为真     |
+| or　   \|\| | a or b　　a \|\| b | 逻辑或，其中一个为真，则结果为真 |
+| not　!      | not a　　! a       | 逻辑非，真为假，假为真           |
+
+**尽量使用英文字母**
+
 ```sql
---  where  逻辑运算符
--- 查询考试成绩在  90-100 之间
-select `studentno`,`studentresult` from `result`  -- 查询全部成绩
-where `studentresult`>=90 and `studentresult`<=100
--- and &&
+--  ============================ where 条件语句 ============================
+-- 查询全部成绩
+select `studentno`,`studentresult` from `result`
+
+-- 查询考试成绩在 95~100 分之间的数据
+-- 使用 and
 SELECT `studentno`,`studentresult` FROM `result`  
-WHERE `studentresult`>=90 and `studentresult`<=100
---  between (区间)
+WHERE `studentresult`>=95 and `studentresult`<=100
+
+-- 使用 &&
+select `studentno`, `studentresult` from `result`
+where `studentresult`>=95 && `studentresult`<=100
+
+--  使用between (区间)
 SELECT `studentno`,`studentresult` FROM `result`  
 WHERE `studentresult` between 90 AND 100
+
 -- 除了学号为 1000 之外的学生成绩
+-- 使用 !=
 SELECT `studentno`,`studentresult` FROM `result`  
-where `studentno` != 1000 
--- 除了学号为 1000 之外的学生成绩   not
+where `studentno` != 1000
+
+-- 使用 not
 SELECT `studentno`,`studentresult` FROM `result`  
-where not `studentno` = 1000 and 1001
+where not `studentno` = 1000
 ```
 
-> ==模糊查询：比较运算符==
 
-| 运算符      | 语法               | 描述                                        |
-| ----------- | ------------------ | ------------------------------------------- |
-| is null     | a is null          | 如果操作符为null，结果为真                  |
-| is not null | a is not null      | 如果操作符不为null，结果为真                |
-| between     | a between b and c  | 若a在b和c之间，结果为真                     |
-| **like**    | a like b           | SQL匹配，如果a匹配b，结果为真               |
-| **in**      | a in (a1,a2,a3...) | 假设a在a1,或者a2...其中某一个值中，结果为真 |
+
+> **模糊查询：比较运算符**
+
+| 运算符      | 语法               | 描述                                          |
+| ----------- | ------------------ | --------------------------------------------- |
+| is null     | a is null          | 如果操作符为null，结果为真                    |
+| is not null | a is not null      | 如果操作符不为null，结果为真                  |
+| between     | a between b and c  | 若a在b和c之间，结果为真                       |
+| **like**    | a like b           | SQL匹配，如果a匹配b，结果为真(可使用模糊查询) |
+| **in**      | a in (a1,a2,a3...) | 假设a在a1,或者a2...其中某一个值中，结果为真   |
 
 ```sql
--- ======== 模糊查询 ========
+-- ================================ 模糊查询 ================================
 -- ============= like =============
--- 查询姓 郭 的同学
+-- 查询姓 刘 的同学
 -- like %(代表0到任意个字符)  _(只指代一个字符)
+SELECT `studentno`,`studentname` FROM `student` 
+WHERE `studentname` LIKE '刘%';
+
+-- 查询姓 刘 的同学 并且 名字后面只有一个字的
 SELECT `studentno`,`studentname` FROM student 
-WHERE studentname LIKE '郭%';
--- 查询姓 郭 的同学 并且 名字只有两个字的
-SELECT `studentno`,`studentname` FROM student 
-WHERE studentname LIKE '郭_';
--- 查询姓 李 的同学 并且 名字只有三个字的
-SELECT `studentno`,`studentname` FROM student 
-WHERE studentname LIKE '李__';
+WHERE `studentname` LIKE '刘_';
+
+-- 查询姓 李 的同学 并且 名字后面有两个字的
+SELECT `studentno`,`studentname` FROM `student` 
+WHERE `studentname` LIKE '李__';
+
 -- 查询名字中有 志 的同学 
-SELECT `studentno`,`studentname` FROM student 
-WHERE studentname LIKE '%志%';
+SELECT `studentno`,`studentname` FROM `student` 
+WHERE `studentname` LIKE '%志%';
 
 -- ============= in(具体的一个或多个值) =============
 -- 查询 1001,1002，1003号学生
-SELECT `studentno`,`studentname` FROM student 
+SELECT `studentno`,`studentname` FROM `student` 
 WHERE `studentno` IN (1001,1002,1003)
+
 -- 查询在 北京西城、广东潮州 的学生
-SELECT `studentno`,`studentname` FROM student 
+SELECT `studentno`,`studentname` FROM `student`
 WHERE `address` IN ('北京西城','广东潮州')
 
 -- ========= null 、 not null ==============
--- 查询地址为空的同学
-SELECT `studentno`,`studentname` FROM student 
+-- 查询地址为空的同学 两种情况：null 空字符串''
+SELECT `studentno`,`studentname` FROM `student` 
 WHERE `address` ='' OR `address` IS NULL
+
 -- 查询有出生日期的同学  不为空
-SELECT `studentno`,`studentname` FROM student 
+SELECT `studentno`,`studentname` FROM `student` 
 WHERE `borndate` IS NOT NULL
+
 -- 查询没有出生日期的同学  为空
-SELECT `studentno`,`studentname` FROM student 
+SELECT `studentno`,`studentname` FROM `student` 
 WHERE `borndate` IS NULL
 ```
 
-### 4.4.联表查询
+### 4.5.联表查询
 
-#### 1.inner/left/right join  
+#### 1.7种join方式
+
+![7种join方式](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/7%E7%A7%8Djoin%E6%96%B9%E5%BC%8F.png)
+
+#### 2.on和where的区别
+
+sql中的连接查询分为3种， cross join，inner join，和outer join ， 在 cross join和inner join中，筛选条件放在on后面还是where后面是没区别的，极端一点，在编写这两种连接查询的时候，只用on不使用where也没有什么问题。因此，on筛选和where筛选的差别只是针对outer join，也就是平时最常使用的left join和right join。
+
+**有下面两条sql查询：**
+
+1、只使用on筛选器
+
+```sql
+select * from main left JOIN ext on main.id = ext.id and address <> '杭州'
+```
+
+结果：
+
+![on筛选器](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/on%E7%AD%9B%E9%80%89%E5%99%A8.png)
+
+2、使用on筛选器和where筛选器
+
+```sql
+select * from main left JOIN ext on main.id = ext.id where address <> '杭州'
+```
+
+结果为：
+
+![on加where筛选器](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/on%E5%8A%A0where%E7%AD%9B%E9%80%89%E5%99%A8.png)
+
+**on和where的区别**首先需要从outer join查询的逻辑查询的各个阶段说起。总的来说，outer join 的执行过程分为4步：
+
+**1、先对两个表执行交叉连接(笛卡尔积)**
+
+**2、应用on筛选器**
+
+**3、添加外部行**
+
+**4、应用where筛选器**
+
+**第一步**，对两个表执行交叉连接，结果如下，这一步会产生36条记录（此图显示不全）
+
+![两张表交叉连接(笛卡尔积)](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%B8%A4%E5%BC%A0%E8%A1%A8%E4%BA%A4%E5%8F%89%E8%BF%9E%E6%8E%A5(%E7%AC%9B%E5%8D%A1%E5%B0%94%E7%A7%AF).png)
+
+**第二步**，应用on筛选器。筛选器中有两个条件，**main.id = ext.id and address<> '杭州'**，符合要求的记录如下:
+
+![应用on筛选器](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%BA%94%E7%94%A8on%E7%AD%9B%E9%80%89%E5%99%A8.png)
+
+**第三步**，添加外部行。outer join有一个特点就是以一侧的表为基，假如另一侧的表没有符合on筛选条件的记录，则以null替代。在这次的查询中，这一步的作用就是将那条原本应该被过滤掉的记录给添加了回来
+
+![添加外部行](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%B7%BB%E5%8A%A0%E5%A4%96%E9%83%A8%E8%A1%8C.png)
+
+结果就成了这样:
+
+![on筛选器](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/on%E7%AD%9B%E9%80%89%E5%99%A8.png)
+
+**第四步**，应用where筛选器。将所有地址不属于杭州的记录筛选了出来
+
+![on加where筛选器](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/on%E5%8A%A0where%E7%AD%9B%E9%80%89%E5%99%A8.png)
+
+参考链接：[sql连接查询中on筛选与where筛选的区别](https://zhuanlan.zhihu.com/p/26420938)
+
+#### 3.inner/left/right join
 
 >  join
 
 -- join (连接的表) on (判断的条件) 连接查询
 -- where 等值查询
 
-**往哪个表差就是以这个表为基准：**
+**查哪张表，则这张表就可以作为主表(左表), 连接的表就作为右表，left join就以左表为基准，right join就以右表为基准**
 
-* a left join b on (以a表为基准)  
+* a left join b (以a表为基准)  
 
-* a rightjoin b on (以b表为基准)  
+* a right join b (以b表为基准)  
 
-多表连接思路：
 
-* 要查哪些数据，在哪些表中
-* 从这个表中找交叉条件（连接点）
-* 先从查询两个表开始
 
-| 操作       | 描述                                                       |
-| ---------- | ---------------------------------------------------------- |
-| inner join | 如果表中至少有一个匹配，就返回值                           |
-| left join  | 会从 左表 中返回所有的值，即使 左表的值 在 右表 中没有匹配 |
-| right join | 会从 右表 中返回所有的值，即使 左表 中没有匹配             |
+| 操作       | 描述                                                         |
+| ---------- | ------------------------------------------------------------ |
+| inner join | 内连接，返回两张表的交集                                     |
+| left join  | 左连接，会从 左表 中返回所有的值，即使 左表的值 在 右表 中没有匹配 |
+| right join | 右连接，会从 右表 中返回所有的值，即使 右表的值 在 左表 中没有匹配 |
 
 ```sql
 -- ============= 联表查询 ======================
@@ -685,26 +818,26 @@ WHERE `borndate` IS NULL
 -- 查询参加考试的同学 （学号，姓名[在另外一个表中]，科目编号，成绩）
 /*  思路
      1.分析需求，分析查询的字段来自那些表 （连接查询）
-     2.确定使用哪种连接方式查询？ 总共7中
-	   确定交叉点：两表之间哪些数据是相同的
-	   判断的条件： 学生表 `studentno` = 成绩表 `studentno`
+     2.确定使用哪种连接方式查询？ 总共7种
+	   确定交叉点(交集)：两表之间哪些数据是相同的
+	   判断的条件： 学生表中的 `studentno` = 成绩表中的 `studentno`
 */
--- inner
-select s.`studentno`,`studentname`,`subjectno`,`studentresult`
-from student as s
-inner join result as r
-where s.`studentno` = r.`studentno`
+-- inner(内连接)：保留两张表中完全匹配的结果集
+select `student`.`studentno`,`student`.`studentname`,`result`.`subjectno`,`result`.`studentresult`
+from `student`
+inner join `result`
+where `student`.`studentno` = `result`.`studentno`
 
 -- join (连接的表) on (判断的条件) 连接查询
--- where 等值查询
+-- where 根据where中的条件对结果进行筛选
 
--- left join ... on 
-SELECT s.`studentno`,`studentname`,`subjectno`,`studentresult`
-FROM student AS s
-left JOIN result AS r
-on s.`studentno` = r.`studentno`
+-- left join(左连接)：返回左表所有的行，即使在右表中没有匹配的记录
+SELECT student.`studentno`,student.`studentname`,result.`subjectno`,result.`studentresult`
+FROM student
+left JOIN result
+on student.`studentno` = result.`studentno`
 
--- right join ... on 
+-- right join(右连接)：返回右表中所有的行，即使在左表中没有匹配的记录
 SELECT s.`studentno`,`studentname`,`subjectno`,`studentresult`
 FROM student AS s
 RIGHT JOIN result AS r
@@ -713,37 +846,37 @@ ON s.`studentno` = r.`studentno`
 
 > 案例一       了解联表查询
 
-* left join
+* left join(左连接)：返回左表所有的行，即使在右表中没有匹配的记录
 
 ```sql
--- left join ... on 
+-- left join ... on ... where ...
 SELECT s.`studentno`,`studentname`,`subjectno`,`studentresult`
 FROM student AS s
 left JOIN result AS r
 on s.`studentno` = r.`studentno`
 ```
 
-![image-20200607031509743](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200607031509743.png)
+![左连接查询结果](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%B7%A6%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C.png)
 
-左表中的 studentname 为 gokudu 的学生在 右表 中并没有值（没有该学生对应的的 studentno），但仍然能查询出来。
+左表中的 studentname 为 gokudu 的学生在 右表 中并没有值（即右表中没有studentid为1038的学生），但仍然能查询出来。
 
 应验了 ==left join 会从 左表 中返回所有的值，即使 左表的值 在 右表 中没有匹配==
 
-* right join
+* right join：返回右表中所有的行，即使在左表中没有匹配的记录
 
 ```sql
--- right join ... on 
+-- right join ... on ... where ...
 SELECT s.`studentno`,`studentname`,`subjectno`,`studentresult`
 FROM student AS s
 RIGHT JOIN result AS r
 ON s.`studentno` = r.`studentno`
 ```
 
-![image-20200607032313667](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200607032313667.png)
+![右连接查询结果](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%8F%B3%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C.png)
 
-查询不出来 gokudu ，因为右表中查询出来的  studentno 中，并没有和 gokudu 的 studentno 匹配的。
+查询不出来 gokudu ，因为右表中没有studentid 为 1038的学生
 
-而查询出来的没有为null的，是因为右表中其他所有的值都能够在左表中找到匹配的。
+查询出来的结果没有null，因为右表中的studentno在左表中都能找到匹配。
 
 > 案例二    利用左表查询，找出缺考的同学
 
@@ -753,7 +886,7 @@ SELECT s.`studentno`,`studentname`,`subjectno`,`studentresult`
 FROM student AS s
 LEFT JOIN result AS r
 ON s.`studentno` = r.`studentno`
-where `studentresult` is null
+where `studentresult` is null -- 加上where对连接查询的结果进行筛选
 ```
 
 > 案例三    思考题（查询参加考试的同学信息：学号，学生姓名，科目名，分数）
@@ -762,13 +895,13 @@ where `studentresult` is null
 -- 思考题（查询参加考试的同学信息：学号，学生姓名，科目名，分数）
 /* 思路
      1.分析需求，分析查询的字段来自哪些表，student，subject，result
-     2.确定使用哪种连接方式查询？ 总共7中
-     确定交叉点：两表之间哪些数据是相同的
+     2.确定使用哪种连接方式查询？ 总共7种
+     确定交叉点(交集)：两表之间哪些数据是相同的
 	   判断的条件： 学生表 `studentno` = 成绩表 `studentno`
 			成绩表 `subjectno` = 课程表 `subjectno`
 	
 */
-select s.`studentno`,`studentname`,su.`subjectname`,`studentresult`
+select s.`studentno`,s.`studentname`,su.`subjectname`,r.`studentresult`
 from `result` r
 left JOIN `student` s
 ON s.`studentno` = r.`studentno`
@@ -776,9 +909,9 @@ inner join `subject` su
 where r.`subjectno` = su.`subjectno`
 ```
 
-可以先查询其中的两个表，然后再来与第三个表找连接点
+**可以先查询其中的两个表，然后再来与第三个表找连接点**
 
-1. 先把 result表 和 student表 连接起来， result表 左连接 student表 ，连接点是 studentno ，那么没有参加考试的 studentno  对应的学生，因为在result表中不会记录，所以在 student表 中匹配过来的都是参加考试的学生
+1. 先把 result表 和 student表 连接起来， result表 左连接 student表 ，连接点是 studentno ，以result表为基准
 
 ```sql
 select s.`studentno`,`studentname`,`subjectno`,`studentresult`
@@ -798,7 +931,7 @@ inner join `subject` su
 where r.`subjectno` = su.`subjectno`
 ```
 
-#### 2.自连接【了解】
+#### 4.自连接【了解】
 
 自己的表和自己的表连接，核心：**一张表拆成两张表**
 
@@ -857,7 +990,7 @@ VALUES
 * 测试
 
 ```sql
--- 查询父子信息
+-- 查询父子信息：把一张表分成两张一样的表来进行查询
 SELECT a.`categoryName` AS '父栏目',b.`categoryName` AS '子栏目'
 FROM `category` AS a,`category` AS b
 WHERE a.`categoryid`=b.`pid`
@@ -877,22 +1010,22 @@ WHERE a.`categoryid`=b.`pid`
 */
 SELECT s.`studentno`,s.`studentname`,sub.`subjectname`,r.`studentresult`
 FROM `student` s
-RIGHT JOIN `result` r
+INNER JOIN `result` r
 ON s.`studentno` = r.`studentno`
 INNER JOIN `subject` sub
 ON r.`subjectno` = sub.`subjectno`
 WHERE sub.`subjectname` LIKE '%数据库结构%'
 ```
 
-### 4.5.分页和排序
+### 4.6.分页和排序
 
 #### 1.排序
 
-order by 某字段 desc/asc
+order by 某字段 desc/asc(降序/升序)
 
 ```sql
 -- 思考题（查询参加 数据库结构 考试的同学信息：学号，学生姓名，科目名，分数）
---  根据成绩排序
+--  根据成绩降序排序
 SELECT s.`studentno`,s.`studentname`,sub.`subjectname`,r.`studentresult`
 FROM `student` s
 RIGHT JOIN `result` r
@@ -900,18 +1033,18 @@ ON s.`studentno` = r.`studentno`
 INNER JOIN `subject` sub
 ON r.`subjectno` = sub.`subjectno`
 WHERE sub.`subjectname` LIKE '%数据库结构%'
-ORDER BY `studentresult` DESC
+ORDER BY `studentresult` DESC -- 降序排序
 ```
 
 #### 2.分页
 
-语法：limit 查询起始下标，页面大小       limit (n-1) * pageSize，pageSize
+语法：limit 查询起始位置，页面大小       通用公式：limit (n-1) * pageSize，pageSize
 
 ```sql
--- 语法  limit 当前页面起始值，页面大小
+-- 语法  limit 起始位置，页面大小
 -- 每页显示 5 条数据
--- limit 0,5   表示 1~5
--- limit 1,5   表示 2~6
+-- limit 0,5   表示 1~5 条数据
+-- limit 1,5   表示 2~6 条数据
 
 SELECT s.`studentno`,s.`studentname`,sub.`subjectname`,r.`studentresult`
 FROM `student` s
@@ -921,17 +1054,17 @@ INNER JOIN `subject` sub
 ON r.`subjectno` = sub.`subjectno`
 WHERE sub.`subjectname` LIKE '%数据库结构%'
 ORDER BY `studentresult` DESC
-LIMIT 0,5
+LIMIT 0,5 -- 显示第 1~5条数据
 
 -- 第一页 limit 0,5    (1-1) * 5
 -- 第二页 limit 5,5    (2-1) * 5
 -- 第三页 limit 10,5   (3-1) * 5
     ...                  ...
 -- 第n页 limit 15,5    (n-1) * pageSize
--- 【 pageSize 页面大小 】
--- 【 (n-1) * pageSize 当前页起始值 】
--- 【 n  当前页 】
--- 【 总数据/页面大小+1 总页数 】
+-- 页面大小：pageSize
+-- 起始值：(n-1) * pageSize
+-- 当前页：n
+-- 总页数：数据总数/页面大小(向上取整)
 ```
 
 查询 C语言-3 课程成绩排名前十  并且分数要大于80 的学生信息（学号，姓名，课程名称，分数）
@@ -944,13 +1077,12 @@ inner JOIN `result` r
 ON s.`studentno` = r.`studentno`
 INNER JOIN `subject` sub
 ON r.`subjectno` = sub.`subjectno`
-WHERE sub.`subjectname` LIKE 'C语言-3' 
-and r.`studentresult` >= 80
+WHERE sub.`subjectname` LIKE 'C语言-3' and r.`studentresult` >= 80
 ORDER BY `studentresult` DESC
 LIMIT 0,10
 ```
 
-### 4.6.子查询
+### 4.7.子查询
 
 where（这个值是计算出来的）
 
@@ -958,22 +1090,20 @@ where（这个值是计算出来的）
 
 ```sql
 -- ============== where 子查询 =============
--- 查询 数据库结构-1 的所有开始接触 学号，科目号，成绩   降序排序
--- 方式一 使用连接查询
-SELECT s.`studentno`,sub.`subjectno`,`studentresult`
-FROM `student` s
-INNER JOIN `result` r
-ON s.`studentno` = r.`studentno`
+-- 查询 数据库结构-1 的所有考试结果 学号，科目编号，成绩   降序排序
+-- 方式一：使用连接查询
+SELECT r.`studentno`,r.`subjectno`,r.`studentresult`
+FROM `result` r
 INNER JOIN `subject` sub
 ON r.`subjectno` = sub.`subjectno`
 WHERE sub.`subjectname` LIKE '数据库结构-1' 
 ORDER BY `studentresult` DESC
 
--- 方式二 使用子查询 (有里及外)
+-- 方式二：使用子查询 (由里及外)
 SELECT `studentno`,`subjectno`,`studentresult`
 FROM `result`
 WHERE `subjectno` = (
-	SELECT `subjectno` FROM SUBJECT
+	SELECT `subjectno` FROM `subject`
 	WHERE `subjectname` LIKE '数据库结构-1' 
 )
 ORDER BY `studentresult` DESC
@@ -983,7 +1113,7 @@ ORDER BY `studentresult` DESC
 
 ```sql
 WHERE `subjectno` = (
-	SELECT `subjectno` FROM SUBJECT
+	SELECT `subjectno` FROM `subject`
 	WHERE `subjectname` LIKE '数据库结构-1' 
 )
 ```
@@ -999,7 +1129,7 @@ FROM `student` s
 INNER JOIN `result` r
 ON s.`studentno`=r.`studentno`
 WHERE r.`studentresult`>=80
-AND `subjectno` =(
+AND `subjectno` = (
 	SELECT `subjectno` 
 	FROM`subject`
 	WHERE `subjectname` LIKE '高等数学-1'
@@ -1088,48 +1218,57 @@ WHERE `studentno` IN (
 
 ```sql
 -- 练习 查询 C语言-1 前五名同学的成绩   学号 姓名 分数
-SELECT	s.`studentno`,`studentname`,`studentresult`
-FROM `student` s
-INNER JOIN `result` r
-ON `studentresult` IN (
-	SELECT `studentresult`
-	FROM `result`
-	WHERE `subjectno` = (
-		SELECT `subjectno`
-		FROM `subject`
-		WHERE `subjectname` LIKE 'C语言-3'
-	)
-) 
-ORDER BY r.`studentresult` DESC
-LIMIT 0,5
-
+-- 使用连接查询加子查询
+select	`student`.`studentno`,`student`.`studentname`,`result`.`studentresult`
+from `student`
+inner join `result`
+on `student`.`studentno` = `result`.`studentno`
+where `result`.`subjectno` = (
+	select `subjectno` from `subject` where `subjectname` = 'C语言-1'
+)
+order by `result`.`studentresult` desc
+limit 0,5
 ```
 
-### 4.7.分组和过滤
+### 4.8.分组和过滤
 
 语法 ： GROUP BY 字段
 
-where 在分组之前使用
+`where` 在分组之前使用
 
-having 在分组之后使用
+`having` 在分组之后使用(分组过滤)
 
 ```sql
--- 查询不同课程的平均分，最高分，最低分
+-- 查询不同课程的平均分，最高分，最低分，平均分大于80
+-- 核心：根据不同的课程分组
 SELECT 	`subjectname`,
-	AVG(`studentresult`) AS '平均数',
+	AVG(`studentresult`) AS '平均分',
 	MAX(`studentresult`) AS '最高分',
 	MIN(`studentresult`) AS '最低分'
 FROM `result` r
 INNER JOIN `subject` sub
 ON r.`subjectno`= sub.`subjectno`
-GROUP BY r.`subjectno`   -- 通过哪个字段来分组
+GROUP BY r.`subjectno`   -- 通过什么字段分组
 -- 再此基础上 要求平均分大于80
-HAVING 平均数 > 80	-- 分组之后使用 having 来过滤条件
+HAVING '平均分' > 80	-- 分组之后使用 having 来过滤条件
 ```
 
-### 4.select小结
+### 4.9.select小结
 
-![image-20200607204429763](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200607204429763.png)
+```sql
+select 去重 要查询的字段 from 表 (注意：表和字段可以取别名)
+xxx(inner,left,right,full) join 要连接的表 on 等值判断
+where 具体的过滤条件 或 子查询语句 注意：where过滤条件中不能包含聚合函数
+group by 通过哪个字段进行分组
+having 过滤分组后的信息，过滤条件可包含聚合函数
+order by 通过哪个字段进行排序 asc/desc(升序/降序)
+limit 起始显示的位置, 显示条数 (分页) 如: 0, 5 从第一条数据开始显示，总共显示5条数据
+
+注意顺序
+
+业务层面：
+查询：可能跨表，跨数据库...
+```
 
 
 
@@ -1147,26 +1286,28 @@ SELECT ABS(-8)   -- 绝对值
 SELECT CEILING(9.5)  -- 向上取整
 SELECT FLOOR(9.5)  -- 向下取整
 SELECT RAND()   -- 返回一个0到1的随机数
-SELECT SIGN(10)   -- 返回一个数值的符号   输入0 返回0   负数返回 -1  整数返回 1 
+SELECT SIGN(10)   -- 返回一个数值的符号   输入0 返回0   负数返回 -1  正数返回 1 
 
 -- 字符串函数
 SELECT CHAR_LENGTH('伯格曼的假面')  -- 字符串长度
 SELECT CONCAT('张三','打','李四')   -- 拼接字符串
-SELECT INSERT('张三想打李四',2,2,'三丰不想')   -- 替换字符串  从某个位置开始，替换 n 个字符串
-					       -- 2,2 代表从 第二个字符开始，替换两个字符
-								-- "三想"  ==>  "三丰不想"
+SELECT INSERT('我爱编程',1,2,'超级热爱')   -- 替换字符串  从某个位置开始，替换 n 个字符串
+					       -- 1,2 代表从 第1个字符开始，替换两个字符
+						   -- "我爱"  ==>  "超级热爱"
+						   -- '我爱编程' ==> '超级热爱编程'
 
-SELECT UPPER('Gokudu')	-- 大写
-SELECT LOWER('Gokudu')	-- 小写
+SELECT UPPER('Gokudu')	-- 转大写
+SELECT LOWER('Gokudu')	-- 转小写
 SELECT INSTR('gokudu','u')  -- 返回第一次出现的 子串 的索引
-SELECT SUBSTR('伯格曼和塔可夫斯基',5,5)   -- 返回指定字符串  第五位开始，截取五个字符
+SELECT SUBSTR('伯格曼和塔可夫斯基',5,5)   -- 返回子串  第五位开始，截取五个字符，结果：'塔可夫斯基'
+SELECT SUBSTR('伯格曼和塔可夫斯基',5)     -- 返回子串  第五位开始，截取到尾部，结果：'塔可夫斯基'
 SELECT REPLACE('伯格曼和塔可夫斯基走到一起，伯格曼说','伯格曼','沟口健二')
 SELECT REVERSE('abcdefg')  -- 反转
 
 -- 查询姓周的同学  改为  邹
 SELECT REPLACE(studentname,'周','邹')
 FROM student 
-WHERE studentname LIKE '%周%'
+WHERE studentname LIKE '周%'
 
 -- 时间和日期函数 (重点)
 SELECT CURRENT_DATE()	-- 获取当前时间
@@ -1175,12 +1316,12 @@ SELECT NOW()	  -- 获取当前时间(毫秒)
 SELECT LOCALTIME() -- 本地时间
 SELECT SYSDATE()    -- 系统时间
 
-SELECT YEAR(CURRENT_DATE())
-SELECT MONTH(CURRENT_DATE())
-SELECT DAY(CURRENT_DATE())
-SELECT HOUR(NOW())
-SELECT MINUTE(NOW())
-SELECT SECOND(NOW())
+SELECT YEAR(CURRENT_DATE())   -- 获取年
+SELECT MONTH(CURRENT_DATE())  -- 获取月
+SELECT DAY(CURRENT_DATE())    -- 获取天
+SELECT HOUR(NOW())            -- 获取小时
+SELECT MINUTE(NOW())          -- 获取分钟
+SELECT SECOND(NOW())          -- 获取秒
 
 -- 系统
 SELECT SYSTEM_USER()
@@ -1191,6 +1332,8 @@ SELECT VERSION()
 
 
 ### 5.2.聚合函数(常用)
+
+**注意**：`where`条件中不能有`聚合函数`，`having`条件中可使用`聚合函数`
 
 | 函数名称  | 描述   |
 | --------- | ------ |
@@ -1215,38 +1358,66 @@ select min(`studentresult`) as '最低分' from `result`
 ```
 
 ```txt
-	select(*)与select(1) 在InnoDB中性能没有任何区别，处理方式相同。
-	官方文档描述如下：InnoDB handles SELECT COUNT(*) and SELECT COUNT(1) operations in the same way. There is no performance difference.
+select(*)与select(1) 在InnoDB中性能没有任何区别，处理方式相同。
+官方文档描述如下：InnoDB handles SELECT COUNT(*) and SELECT COUNT(1) operations in the same way. There is no performance difference.
 ```
 
 博客：MySQL count(*),count(1),count(field)区别、性能差异及优化建议
 
 https://baijiahao.baidu.com/s?id=1660139166311547332&wfr=spider&for=pc
 
-### 5.3.数据库级别的MD5加密（扩展）
+### 5.3.count(*)、count(1)、count(列名)区别
+
+**执行效果上：**
+
+* `count(*)`包括了所有的列，相当于统计行数，在统计结果的时候，不会忽略列值为`null`的行
+* `count(1)`会统计表中的所有记录数，包括字段为`null`的记录
+* `count(列名)`只包括列名那一列，在统计结果的时候，会忽略列值为空(这里的列值为空不是指`空字符串`或者`0`，而是表示`null`)的计数，即某个字段值为`null`时，不统计
+
+**执行效率上：**
+
+* 列名为主键，`count(列名`)会比`count(1)`快
+* 列名不为主键，`count(1)`会比`count(列名)`快
+* 如果表多个列没有主键，则`count(1)`的执行效率优于`count(*)`
+* 如果有主键，则`count(主键)`的执行效率是最优的
+* 如果表只有一个字段，则`count(*)`最优
+* 当表数据量大时(大于1w数据量)，对表作分析之后，使用`count(*)`的用时比`count(1)`少
+* 当表数据量少时(1w以内数据量)，在做过表分析之后，`count(1)`会比`count(*)`用时少
+
+### 5.4.数据库级别的MD5加密（扩展）
 
 MD5相比其前身，主要增强了算法复杂度和==**不可逆性**==
 
 MD5不可逆，具体的值的md5不变
 
-所以一些常用的数据转为md5不安全，有人会把这些常见做成一个数据字典（md5加密后的值：加密前的值）
+所以一些常用的数据转为md5不安全，有人会把常见的值做成一个数据字典（md5加密后的值：md5加密前的值），根据该字典对常见值进行破解。
 
 ```sql
 -- ============ 测试MD5加密 ===============
 CREATE TABLE `testmd5`(
-   `id` INT(4) NOT NULL,
-   `name` VARCHAR(20) NOT NULL,
-   `pwd` VARCHAR(50) NOT NULL,
-   PRIMARY KEY(`id`)
-)ENGINE=INNODB DEFAULT CHARSET=utf8
+    `id` INT(4) NOT NULL,
+    `name` VARCHAR(20) NOT NULL,
+    `pwd` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 -- 明文密码
-INSERT INTO testmd5 VALUES(1,'zhangsan','123456'),(2,'lisi','123456'),(3,'wangwu','123456')
+INSERT INTO `testmd5` (`id`, `name`, `pwd`)
+VALUES (1, 'zhangsan', '123456'),
+(2, 'lisi', '123456'),
+(3, 'wangwu', '123456');
 
--- md5加密,插入的时候加密 
-INSERT INTO testmd5 VALUES(4,'zhangsan',MD5('123456'))
--- 校验，将用户传递过来的密码，进行MD5加密，然后和数据库中插入时加密过的密码进行对比
-SELECT * FROM testmd5 WHERE NAME='zhangsan' AND pwd=MD5('123456')
+-- 对id为1的行的'pwd'字段进行加密
+UPDATE `testmd5` SET `pwd`=MD5(`pwd`) WHERE `id`=1;
+
+-- 加密所有行
+UPDATE `testmd5` SET `pwd`=MD5(`pwd`);
+
+-- 插入的时候加密
+INSERT INTO `testmd5` (`id`, `name`, `pwd`) VALUES (4, 'xiaoming', MD5(123456));
+
+-- 校验，查询名字为'xiaoming'，密码为123456的用户
+SELECT `id`,`name`,`pwd` FROM `testmd5` WHERE `name`='xiaoming' AND `pwd`=MD5(123456);
 ```
 
 
@@ -1257,11 +1428,15 @@ SELECT * FROM testmd5 WHERE NAME='zhangsan' AND pwd=MD5('123456')
 
 ==要么都成功，要么都失败==
 
-1.SQL执行   A给B转账       A 1000  --> 200           B  300
+**概念：**[数据库](https://baike.baidu.com/item/数据库/103728)事务( transaction)是访问并可能操作各种[数据项](https://baike.baidu.com/item/数据项/3227309)的一个数据库操作序列，这些操作要么全部执行,要么全部不执行，是一个不可分割的工作单位。事务由事务开始与事务结束之间执行的全部数据库操作组成。
+
+1.SQL执行  A给B转账         A 1000  --> (200)        B  300
 
 2.SQL执行  B收到A的钱     A  800                          B  500
 
-> 事务原则：ACID原则  ：　原子性，一致性，隔离性，持久性　　
+### 6.2.事务原则
+
+**ACID原则** ：原子性，一致性，隔离性，持久性　　
 
 参考博客：https://blog.csdn.net/dengjili/article/details/82468576
 
@@ -1278,89 +1453,203 @@ SELECT * FROM testmd5 WHERE NAME='zhangsan' AND pwd=MD5('123456')
 **持久性（Durability）**
 持久性是指一个事务一旦被提交，它对数据库中数据的改变就是永久性的，接下来即使数据库发生故障也不应该对其有任何影响
 
->隔离所导致的一些问题
+### 6.3.隔离所导致的一些问题
 
 **脏读：**
 
-指一个事务读取了另一个事务未提交的数据。
+指一个事务读取了另一个事务未提交的数据(更新前的数据)。
 
  ==例子：==
 
-A  500  B 200   C 200
+A  500   B 200   C 200
 
-A --> B  200       
+A --->(200) B  A向B转200元
 
-C--->B  100     
+C --->(100) B  C向B转100元
 
 
 
- C在 A转给B 200 未提交时 ，自己转给B 100 ，那么他读到的是 B 300  ，C 100
+1、C在 A转给B 200 未提交时 ，自己转给B 100 ，这时他读到的B的值是初始状态的值为200，结果为 B：200+100=300  ，C：200-100=100
 
-然后 A转给B 事务提交之后 ， A 300    B 400         （那么 总值会有 100 丢失）   
+2、然后 A转给B 200元 事务提交之后 ， 结果为：A：500-200=300　B：200+200=400 
+
+最终：结果为 A：300　B：400　C：100，总值少了100
+
+
+
+|               会话1                |                   会话2                    |
+| :--------------------------------: | :----------------------------------------: |
+|               begin                |                   begin                    |
+|                                    | update tablename set age = 10 where id = 1 |
+| select age from table where id = 1 |                                            |
+|               commit               |                   commit                   |
+
+会话1得到的`age`的值是会话2更新前的值
 
 
 
 **不可重复读：**
 
-在一个事务内读取表中的某一行数据，多次读取结果不同。（不一定是错误的，只是该值已经被修改并且提交事务了）
+在一个事务内读取表中的某一行数据，多次读取结果不同。（不一定是错误的）
+
+原因：在本次事务提交前，某值被其他事务修改并且提交，导致本次事务前后读取的结果不同
 
 
 
-**虚读、幻读：**
+|               会话1                |                   会话2                    |
+| :--------------------------------: | :----------------------------------------: |
+|               begin                |                   begin                    |
+| select age from table where id = 1 |                                            |
+|                                    | update tablename set age = 10 where id = 1 |
+|                                    |                   commit                   |
+| select age from table where id = 1 |                                            |
+|               commit               |                                            |
 
-指在一个事务内读取到别人的事务插入的数据，导致前后不一致。（有别的事务插入新数据）
+由于在读取中间变更了数据，所以会话 1 事务查询期间的得到的结果就不一样了。
 
-> 执行事务
 
-执行流程：
 
-<img src="https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200607221025093.png" alt="image-20200607221025093" style="zoom:80%;" />
+**虚读(幻读)：**
+
+指在一个事务内读取到别的事务插入的数据，导致前后不一致。（一般是行影响，多了一行）
+
+
+
+|               会话1                |                   会话2                    |
+| :--------------------------------: | :----------------------------------------: |
+|               begin                |                   begin                    |
+| select age from table where id > 2 |                                            |
+|                                    | insert into table (id, age) values (5, 10) |
+|                                    |                   commit                   |
+| select age from table where id > 2 |                                            |
+|               commit               |                                            |
+
+
+
+### 6.4.MySQL数据隔离级别
+
+**MySQL 里有四个隔离级别：**
+
+1. Read uncommittied (可读取未提交数据)
+
+   (1) 所有事务都可以看到其他未提交事务的执行结果
+   (2) 本隔离级别很少用于实际应用，因为它的性能也不比其他级别好多少
+
+   
+
+2. Read committed (可读取已提交数据)
+
+   (1) 这是大多数数据库系统的默认隔离级别（但不是MySQL默认的）
+   (2) 它满足了隔离的简单定义：一个事务只能看见已经提交事务所做的改变
+
+   
+
+3. Repeatable read (可重复读，MySQL默认事务隔离级别)
+
+   (1) 这是MySQL的默认事务隔离级别
+   (2) 它确保同一事务的多个实例在并发读取数据时，会看到同样的数据行
+
+   
+
+4. Serialization (可串行化)
+
+   (1) 这是最高的隔离级别
+   (2) 它通过强制事务排序，使之不可能相互冲突，从而解决幻读问题。简言之,它是在每个读的数据行上加上共享锁。
+   (3) 在这个级别，可能导致大量的超时现象和锁竞争
+
+
+
+不同事务隔离级别的效果：
+
+| 隔离级别                    | 脏读 | 不可重复读 | 幻读 |
+| --------------------------- | ---- | ---------- | ---- |
+| 读未提交 (Read uncommitted) | √    | √          | √    |
+| 读已提交 (Read committed)   | ×    | √          | √    |
+| 可重复读 (Repeatable read)  | ×    | ×          | √    |
+| 可串行化 (Serializable)     | ×    | ×          | ×    |
+
+在 `InnoDB` 中，默认为 `Repeatable` 级别，`InnoDB` 中使用一种被称为 `next-key locking` 的策略来避免幻读（phantom）现象的产生。
+
+隔离级别越高，越能保证数据的完整性和一致性，但是对并发性能的影响也越大。
+
+
+
+### 6.5.执行事务
+
+事务执行流程：
+
+![事务执行流程](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%BA%8B%E5%8A%A1%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B.png)
 
 ```sql
--- ============= 事务 ==============
+-- ========================== 事务 ===========================
+
 -- mysql默认开启事务自动提交
 SET autocommit = 0  -- 关闭自动提交
-SET autocommit = 1  -- 开启 (默认)
+SET autocommit = 1  -- 开启自动提交(默认)
 
 -- 手动开启事务
 SET autocommit = 0  -- 关闭自动提交
--- 事务开启
-START TRANSACTION -- 标记一个事务的开始，从这个之后的sql都在同一个事务内
 
-INSERT ...
+-- 事务开启
+START TRANSACTION -- 标记一个事务的开始，从这个之后的 sql 都在同一个事务内
+
+INSERT ...  -- sql语句
 INSERT ...
 
 -- 提交: 持久化（成功）
 COMMIT
+
 -- 回滚：回到原来的样子（失败）
 ROLLBACK
 
 -- 事务结束
- SET autocommit = 1  -- 开启自动提交 (回到默认)
+SET autocommit = 1  -- 开启自动提交 (回到默认)
 
 -- 了解
-SAVEPOINT -- 设置事务的保存点
-ROLLBACK TO SAVEPOINT --  回滚到保存点
-RELEASE SAVEPOINT  -- 撤销保存点
+SAVEPOINT 保存点名 -- 设置一个事务的保存点
+ROLLBACK TO SAVEPOINT 保存点名 --  回滚到保存点
+RELEASE SAVEPOINT 保存点名 -- 撤销保存点
 ```
 
-> 模拟转账	
+
+
+**模拟转账**
 
 ```sql
--- 模拟转账  事务
-SET autocommit = 0 -- 关闭自动提交事务 
-START TRANSACTION  -- 开启一个事务 (一组事务)
+-- 创建数据库 shop
+CREATE DATABASE shop CHARACTER SET=utf8 COLLATE=utf8_general_ci;
 
-UPDATE `account` SET `money` = `money`-500 WHERE `name`='A'  -- A减500元
-UPDATE `account` SET `money` = `money`+500 WHERE `name`='B'  -- B加500元
+-- 使用 shop 数据库
+USE shop; 
 
-COMMIT       -- 提交事务，就被持久化，回滚也没用
-ROLLBACK     -- 回滚事务
+CREATE TABLE `account`(
+    `id` INT(3) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(30) NOT NULL,
+    `money` DECIMAL(9,2) NOT NULL,  -- decimal() 第1个参数表示这个数的总位数，第二个参数表示小数的位数
+    PRIMARY KEY (`id`)
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
 
-SET autocommit = 1    -- 恢复默认自动提交事务
+-- 插入数据
+INSERT INTO `account` (`name`,`money`) VALUES ('A',2000.00),('B',10000.00);
+
+-- 模拟转账：事务
+SET autocommit = 0; -- 关闭自动提交
+START TRANSACTION; -- 开启一个事务
+
+UPDATE `account` SET `money`=`money`-500 WHERE `name` = 'A'; -- A减500
+UPDATE `account` SET `money`=`money`+500 WHERE `name` = 'B'; -- B加500
+
+COMMIT; -- 提交事务，就被持久化了！(无法回滚)
+ROLLBACK; -- 回滚
+
+SET autocommit = 1; -- 开启自动提交(恢复默认值)
 ```
 
+
+
 ## 7.索引
+
+参考链接：[MySQL索引背后的数据结构及算法原理](http://blog.codinglabs.org/articles/theory-of-mysql-index.html)
 
 > MySQL官方对索引的定义为：索引（Index）是帮助**MySQL高效获取数据**的**数据结构**。
 >
@@ -1369,14 +1658,15 @@ SET autocommit = 1    -- 恢复默认自动提交事务
 ### 7.1.索引的分类
 
 * 主键索引   (PRIMARY KEY)
-  * 唯一的标识。**主键** 不可用重复
+  * 唯一的标识。**主键** 不可重复，主键约束可以是一个列或者是列的组合，其值能唯一标识表中的每一行。这样的一列或多列称为表的主键 。它是一种特殊的唯一索引，不允许有空值。一个表只能有一个主键。
 * 唯一索引   (UNIQUE KEY)
-  * 、避免重复的列出现。**唯一索引** 可以重复，多个列都可以标识为 **唯一索引**
+  * 字段的值不可重复。一张表中可以标识多个**唯一索引**。它与普通索引类似，不同的就是：普通索引允许被索引的数据列包含重复的值。而唯一索引列的值必须唯一，但允许有空值。如果是组合索引，则列值的组合必须唯一。
 * 常规索引   (KEY/INDEX)
-  * 默认的。KEY/INDEX 关键字设置
+  * **默认的**。KEY/INDEX 关键字设置，这是最基本的索引，它没有任何限制。普通索引（由关键字KEY或INDEX定义的索引）的唯一任务是加快对数据的访问速度。因此，应该只为那些最经常出现在查询条件(WHERE column = …)或排序条件(ORDER BY column)中的数据列创建索引。
 * 全文索引   (FULLTEXT)
   * 在特定的数据库引擎下才有（MyISAM）
   * 快速定位数据
+  * 查找的是文本中的关键词，主要用于全文检索
 
 > 基础语法
 
@@ -1388,20 +1678,76 @@ SET autocommit = 1    -- 恢复默认自动提交事务
 -- 显示所有索引信息
 SHOW INDEX FROM student
 
--- 增加一个全文索引（其他索引同理）     索引名（列名）
-ALTER TABLE student ADD FULLTEXT INDEX `studentname`(`studentname`);
+-- 第二种添加索引的方式
+-- 增加一个全文索引（其他索引同理）     索引名（列名）（索引名可省略）
+ALTER TABLE student ADD FULLTEXT `studentname`(`studentname`);
 
--- 创建一个索引  id_表明_字段名
--- CREATE INDEX 索引名 ON 表(字段);
+-- 创建一个索引  id_表名_字段名
+-- CREATE INDEX 索引名 ON 表(字段); (第三种添加索引的方式)
 CREATE INDEX id_app_user_name ON app_user(`name`);
+
+-- explain 分析sql执行的情况
 
 EXPLAIN SELECT * FROM student;  --  非全文索引
 EXPLAIN SELECT * FROM student WHERE MATCH(studentname) AGAINST('李');
 ```
 
-![image-20200607225056611](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200607225056611.png)
+### 7.2 添加删除索引
 
-### 7.2.测试索引
+**添加索引：**
+
+**第一种(创建表的时候添加)：**
+
+```sql
+CREATE TABLE `student`(
+    `StudentNo` INT(4) NOT NULL COMMENT '学号',
+    `LoginPwd` VARCHAR(20) DEFAULT NULL COMMENT '登录密码',
+    `StudentName` VARCHAR(20) DEFAULT NULL COMMENT '学生姓名',
+    `Sex` TINYINT(1) DEFAULT NULL COMMENT '性别，取0或1',
+    `GradeId` INT(11) DEFAULT NULL COMMENT '年级编号',
+    `Phone` VARCHAR(50) NOT NULL COMMENT '联系电话，允许为空，即可选输入',
+    `Address` VARCHAR(255) NOT NULL COMMENT '地址，允许为空，即可选输入',
+    `BornDate` DATETIME DEFAULT NULL COMMENT '出生日期',
+    `Email` VARCHAR(50) NOT NULL COMMENT '邮箱账号，允许为空，即可选输入',
+    `IdentityCard` VARCHAR(18) DEFAULT NULL COMMENT '身份证号',
+    PRIMARY KEY(`StudentNo`),
+    UNIQUE KEY `IdentityCard` (`IdentityCard`), -- 第一种添加索引的方式
+    KEY `Email` (`Email`),
+    CONSTRAINT `FK_GradeId` FOREIGN KEY (`GradeId`) REFERENCES `grade`(`GradeId`) -- 设置外键
+)ENGINE=MYISAM DEFAULT CHARSET=utf8;
+```
+
+
+
+**第二种(表创建后添加，使用alter)：**
+
+```sql
+-- 增加一个全文索引（其他索引同理）     索引名（列名）（索引名可省略）
+ALTER TABLE student ADD FULLTEXT `studentname`(`studentname`);
+```
+
+
+
+**第三种(表创建后添加，使用create)：**
+
+```sql
+-- CREATE INDEX 索引名 ON 表(字段); (第三种添加索引的方式)
+CREATE INDEX id_app_user_name ON app_user(`name`);
+```
+
+
+
+**删除索引：**
+
+```sql
+drop index index_name on table_name;
+alter table table_name drop index index_name;
+alter table table_name drop primary key;
+```
+
+
+
+### 7.3.测试索引
 
 * 新建数据库，添加100万条数据进行测试
 
@@ -1421,67 +1767,73 @@ CREATE TABLE `app_user` (
 
 
 -- 插入100万条数据
-DELIMITER $$  -- 写函数之前必写，标志
-CREATE FUNCTION mockdatatest()
-RETURNS INT
+-- 写函数之前必须要写，标志
+DELIMITER $$
+-- set global log_bin_trust_function_creators=TRUE;
+CREATE FUNCTION mock_data()
+RETURNS INT DETERMINISTIC
 BEGIN
-   DECLARE num INT DEFAULT 1000000;
-   DECLARE i INT DEFAULT 0;
-   WHILE i<num DO	
-	INSERT INTO `app_user`(`name`,`email`,`phone`,`gender`,`password`,`age`)VALUES (CONCAT('用户',i),'15613114@qq.com','13076451252',0,UUID(),FLOOR(RAND()*110));	
-	SET i=i+1;
-   END WHILE; 
-   RETURN i;
+    DECLARE num INT DEFAULT 1000000;
+    DECLARE i INT DEFAULT 0;
+    
+    WHILE i<num DO
+        INSERT INTO app_user(`name`,`email`,`phone`,`gender`,`password`,`age`)
+        VALUES (CONCAT('用户',i),CONCAT(FLOOR(RAND()*(999999999-100000000)+100000000),'@qq.com'),FLOOR(RAND()*9999999999+10000000000),FLOOR(RAND()*2),UUID(),FLOOR(100*RAND()));
+        SET i = i + 1;
+    END WHILE;
+    RETURN 0;
 END;
 
-SELECT mockdatatest();
+SELECT mock_data(); -- 执行此函数 生成一百万条数据
+
+SELECT COUNT(*) FROM `app_user`; -- 统计数据条数
 ```
 
-* 执行sql
+* 查询`用户9999`的信息
 
 ```sql
-select * from `app_user` where `name` like '用户9999'
+select * from `app_user` where `name` = '用户9999';
 ```
 
-![image-20200608003159920](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200608003159920.png)
+![查询用户9999所花的时间](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%9F%A5%E8%AF%A2%E7%94%A8%E6%88%B79999%E6%89%80%E8%8A%B1%E7%9A%84%E6%97%B6%E9%97%B4.png)
 
-* expain 
+* 分析上述查询语句，发现期间共查询了992262条数据
 
 ```sql
-EXPLAIN SELECT * FROM `app_user` WHERE `name` LIKE '用户9999'; 
+EXPLAIN SELECT * FROM `app_user` WHERE `name` = '用户9999'; 
 ```
 
-![image-20200608003422666](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200608003422666.png)
+![分析查询语句](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%88%86%E6%9E%90%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5.png)
 
-* 创建一个索引
+* 创建一个索引(第三种方式)
 
 ```sql
 -- 创建一个索引  id_表明_字段名
 -- CREATE INDEX 索引名 ON 表(字段);
-CREATE INDEX id_app_user_name ON app_user(`name`);
+CREATE INDEX id_app_user_name ON `app_user`(`name`);
 ```
 
 * 测试
 
 ```sql
-SELECT * FROM `app_user` WHERE `name` LIKE '用户9999';
+SELECT * FROM `app_user` WHERE `name` = '用户9999';
 ```
 
-![image-20200608004121096](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200608004121096.png)
+![添加索引后的查询时间](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%B7%BB%E5%8A%A0%E7%B4%A2%E5%BC%95%E5%90%8E%E7%9A%84%E6%9F%A5%E8%AF%A2%E6%97%B6%E9%97%B4.png)
 
-* expain 
+* 分析上述添加索引后的查询语句，发现期间共查询了1条数据
 
 ```sql
-EXPLAIN SELECT * FROM `app_user` WHERE `name` LIKE '用户9999'; 
+EXPLAIN SELECT * FROM `app_user` WHERE `name` = '用户9999'; 
 ```
 
-![image-20200608004152612](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200608004152612.png)
+![分析添加索引后的查询语句](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%88%86%E6%9E%90%E6%B7%BB%E5%8A%A0%E7%B4%A2%E5%BC%95%E5%90%8E%E7%9A%84%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5.png)
 
 ==索引在数据量较小的时候，感觉不到差别==
 
 ==但是在数据量很大的时候，区别十分明显==
 
-### 7.3.为什么索引能提高查询速度
+### 7.4.为什么索引能提高查询速度
 
 博客： [https://github.com/GokuDU/JavaGuide/blob/master/docs/database/MySQL%20Index.md](https://github.com/GokuDU/JavaGuide/blob/master/docs/database/MySQL Index.md)
 
@@ -1501,7 +1853,7 @@ EXPLAIN SELECT * FROM `app_user` WHERE `name` LIKE '用户9999';
 
 很明显，在数据量很大的情况下这样查找会很慢！这样的时间复杂度为O（n）。
 
-### 使用索引之后
+### 7.5.使用索引之后
 
 索引做了些什么可以让我们查询加快速度呢？其实就是**将无序的数据变成有序(相对)**：
 
@@ -1515,14 +1867,18 @@ EXPLAIN SELECT * FROM `app_user` WHERE `name` LIKE '用户9999';
 
 其实底层结构就是B+树，B+树作为树的一种实现，能够让我们很快地查找出对应的记录。
 
-### 7.4.索引原则
+### 7.6.索引原则
 
 * 索引不是越多越好
-* 不对进程变动数据加索引
-* 小数据的表不需要加索引
-* 索引一般用来加在查询的字段
+* 不要对经常变动数据加索引
+* 小数据量的表不需要加索引
+* 索引一般加在查询的字段上
+
+
 
 > 索引的数据结构
+
+Hash类型的索引
 
 Btree  ： InnoDB 的默认类型
 
@@ -1532,23 +1888,24 @@ B+Tree
 
 ​			 [https://github.com/GokuDU/JavaGuide/blob/master/docs/database/MySQL%20Index.md](https://github.com/GokuDU/JavaGuide/blob/master/docs/database/MySQL Index.md)
 
-## 8.数据库备份
+## 8.权限管理和数据库备份
 
 ### 8.1.用户管理
 
 > SQLyog 可视化管理
 
-![image-20200608020931902](https://raw.githubusercontent.com/GokuDU/docsify-blog/master/images/image-20200608020931902.png)
+![用户管理](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86.png)
 
 > 命令操作
 
 用户表:  mysql.user
 
-本质：对这种表进行增删改查
+本质：对这张表进行增删改查
 
 ```sql
 -- 创建用户 create user 用户名 identified by '密码'
 CREATE USER gokudu IDENTIFIED BY '123456'
+-- create user gokudu identified with mysql_native_password by '123456'; -- mysql:8.0以上要加 with mysql_native_password 可视化工具才能连接该用户
 
 -- 修改当前用户密码
 SET PASSWORD=PASSWORD('123456')
@@ -1559,13 +1916,15 @@ SET PASSWORD FOR gokudu = PASSWORD('123456')
 -- 重命名 rename user 旧用户名 to 新的用户名
 RENAME USER gokudu TO gokufriday
 
--- 用户授权  授予全部权限   grant 全部的权限 on 全部库.全部表 to gokufriday
--- all privileges 除了给其他人授权不能没有权限  其他都能干 
+-- 用户授权：授予全部权限   grant 全部的权限 on 全部库.全部表 to gokufriday
+-- all privileges 除了给其他人授权没有权限(没有grant权限)  其他都能干 
 GRANT ALL PRIVILEGES ON *.* TO gokufriday
 
 -- 查询权限
 SHOW GRANTS FOR gokufriday  -- 查看指定用户的权限
 SHOW GRANTS FOR root@localhost	
+
+-- root用户多了一个grant权限
 -- ROOT用户： GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION
 
 -- 撤销权限  revoke 全部的权限 on 全部库.全部表 from gokufriday
@@ -1582,32 +1941,52 @@ DROP USER gokufriday
 * 保证数据不丢失
 * 数据转移
 
-MySQL备份的方式
+MySQL数据库备份的方式
+
+* 拷贝物理文件
 
 * 使用可视化工具导出
-* 使用命令行导出   mysqldump
+
+  + 在想要导出的表或者库中，右键，选择备份/导出，选择备份表作为SQL转储，如下图所示：
+
+  ![SQL转储](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/SQL%E8%BD%AC%E5%82%A8.png)
+
+  * sql文件内容：
+
+  ![sql文件内容](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/sql%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9.png)
+
+* 使用命令导出(终端)   mysqldump 
 
 导出：
 
 ```bash
-# mysqldump -h主机 -u用户 -p密码 数据库 表名 >物理磁盘位置/文件名
-mysqldump -hlocalhost -uroot -p123456 school student >d:/student.sql
+# mysqldump -h主机 -u用户 -P端口号 -p密码 数据库 表名 > 物理磁盘位置/文件名
+mysqldump -hlocalhost -uroot -P3306 -p123456 school student > d:/student.sql
 mysqldump: [Warning] Using a password on the command line interface can be insecure.
 
 # 导出多张表
-# mysqldump -h主机 -u用户 -p密码 数据库 表1 表2 表三 ... >物理磁盘位置/文件名
->mysqldump -hlocalhost -uroot -p123456 school student result grade >d:/b.sql
+# mysqldump -h主机 -u用户 -p密码 数据库 表1 表2 表3 ... > 物理磁盘位置/文件名
+>mysqldump -hlocalhost -uroot -P3306 -p123456 school student result grade > d:/b.sql
 
 # 导出某个数据库
-mysqldump -hlocalhost -uroot -p123456 school >d:/c.sql
+# mysqldump -h主机 -u用户 -p密码 数据库 > 物理磁盘位置/文件名
+mysqldump -hlocalhost -uroot -P3306 -p123456 school > d:/c.sql
 ```
+
+sql文件内容：
+
+![命令导出sql文件内容](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%91%BD%E4%BB%A4%E5%AF%BC%E5%87%BAsql%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9.png)
 
 导入：
 
 ```bash
-# 在登录的情况下，使用source
-# 物理磁盘位置/文件名
+# 在登录的情况下，使用source 物理磁盘位置/文件名(注意路径不能包含中文)
+# 若导入数据库，则不用切换数据库
+# 若导入表，则需要切换对应的数据库 use 数据库名;
 source d:/c.sql
+
+# 方式二(该方式路径中可包含中文)：
+mysql -h主机地址 -u用户名 -P端口号 -p密码 数据库名 < 要导入的sql文件
 ```
 
 ## 9.规范数据库设计
@@ -1619,7 +1998,7 @@ source d:/c.sql
 **糟糕的数据库设计：**
 
 * 数据冗余，浪费空间
-* 数据库插入和删除比较麻烦’异常【使用物理外键】
+* 数据库插入和删除比较麻烦、异常【使用物理外键】
 * 程序的性能差
 
 **良好的数据库设计：**
@@ -1637,7 +2016,81 @@ source d:/c.sql
 
 **设计数据库的步骤：（个人博客）**
 
+* 收集信息，分析需求
+  * 用户表（用户登录注销，用户的个人信息，写博客，创建分类）
+  * 分类表（文章分类，谁创建的）
+  * 文章表（文章的信息）
+  * 评论表（评论人，回复人）
+  * 友链表（友链信息）
+  * 自定义表（系统信息，某个关键的字，或者一些主题）key: value
+  * 说说表（发表心情.. id... content... create_time）
+* 标识实体（把需求落地到每个字段）
+* 标识实体之间的关系
+  * 写博客：user --> blog
+  * 创建分类：user --> category
+  * 关注：user --> user
+  * 友链：links
+  * 评论：user(回复) --> user(评论) --> blog
 
+**建数据库，建表：**
+
+```sql
+-- 创建数据库myblog
+CREATE DATABASE myblog CHARACTER SET=utf8 COLLATE=utf8_general_ci;
+
+USE myblog;
+
+-- 创建user表
+CREATE TABLE `user`(
+    `id` INT(10) NOT NULL AUTO_INCREMENT COMMENT '用户唯一id',
+    `username` VARCHAR(60) NOT NULL COMMENT '用户名',
+    `password` VARCHAR(60) NOT NULL COMMENT '用户密码',
+    `sex` VARCHAR(2) COMMENT '性别',
+    `age` INT(3) COMMENT '年龄',
+    `signature` VARCHAR(200) COMMENT '签名',
+    PRIMARY KEY (`id`)
+)ENGINE=INNODB CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 创建分类表
+CREATE TABLE `category`(
+    `id` INT(10) NOT NULL COMMENT '分类id',
+    `category_name` VARCHAR(30) NOT NULL COMMENT '分类标题',
+    `create_user_id` INT(10) NOT NULL COMMENT '创建用户id',
+    PRIMARY KEY (`id`)
+)ENGINE=INNODB CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 创建评论表
+CREATE TABLE `comment`(
+    `id` INT(10) NOT NULL COMMENT '评论id',
+    `blog_id` INT(10) NOT NULL COMMENT '评论的文章',
+    `user_id` INT(10) NOT NULL COMMENT '评论人',
+    `content` VARCHAR(2000) NOT NULL COMMENT '评论内容',
+    `create_time` DATETIME NOT NULL COMMENT '评论时间',
+    `user_id_parent` INT(10) NOT NULL COMMENT '回复人id',
+    PRIMARY KEY (`id`)
+)ENGINE=INNODB CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 创建友链表
+CREATE TABLE `links`(
+    `id` INT(10) NOT NULL COMMENT '友链id',
+    `links` VARCHAR(50) NOT NULL COMMENT '网站名称',
+    `href` VARCHAR(2000) NOT NULL COMMENT '超链接目标的URL，即网站链接',
+    `sort` INT(10) NOT NULL COMMENT '排序',
+    PRIMARY KEY (`id`)
+)ENGINE=INNODB CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 添加字段
+ALTER TABLE `user` ADD `open_id` VARCHAR(1000) NOT NULL COMMENT '微信id';
+ALTER TABLE `user` ADD `avatar` VARCHAR(1000) NOT NULL COMMENT '头像链接地址';
+
+-- 创建关注中间表
+CREATE TABLE `user_follow`(
+    `id` INT(10) NOT NULL COMMENT '唯一标识',
+    `user_id` INT(10) NOT NULL COMMENT '被关注的用户id',
+    `follow_id` INT(10) NOT NULL COMMENT '关注人的用户id',
+    PRIMARY KEY (`id`)
+)ENGINE=INNODB CHARSET=utf8 COLLATE=utf8_general_ci;
+```
 
 
 
@@ -1652,11 +2105,11 @@ source d:/c.sql
 * 删除异常
   * 丢失有效信息
 
-> 三大范式
+**三大范式：**
 
 **第一范式（1NF）**
 
-==原子性==：保证数据表的每一列都是不可分割的==原子性==数据项
+==原子性==：保证数据表的每一列都是不可分割的`原子性`数据项
 
 
 
@@ -1666,13 +2119,35 @@ source d:/c.sql
 
 比如，在一个家庭信息列中，既有家庭人数信息，又有家庭住址信息
 
+例子：
+
+![不满足第一范式](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%B8%8D%E6%BB%A1%E8%B6%B3%E7%AC%AC%E4%B8%80%E8%8C%83%E5%BC%8F.png)
+
+在上面的表中，“家庭信息”和“学校信息”列均不满足原子性的要求，故不满足第一范式，调整如下：
+
+![满足第一范式](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%BB%A1%E8%B6%B3%E7%AC%AC%E4%B8%80%E8%8C%83%E5%BC%8F.png)
+
+可见，调整后的每一列都是不可再分的，因此满足第一范式（1NF）；
+
 
 
 **第二范式（2NF）**
 
 前提：满足第一范式
 
-每张表值描述一件事情
+每张表只描述一件事情
+
+**在1NF的基础上，非码属性必须完全依赖于候选码（在1NF基础上消除非主属性对主码的部分函数依赖）**
+
+**第二范式需要确保数据库表中的每一列都和主键相关，而不能只与主键的某一部分相关（主要针对联合主键而言）。**
+
+例子：
+
+![不满足第二范式](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%B8%8D%E6%BB%A1%E8%B6%B3%E7%AC%AC%E4%BA%8C%E8%8C%83%E5%BC%8F.png)
+
+在上图所示的情况中，`同一个订单中可能包含不同的产品`，因此`主键`必须是`“订单号”和“产品号”联合组成`，但可以发现，`产品数量、产品折扣、产品价格与“订单号”和“产品号”都相关`，但是`订单金额和订单时间`仅与`“订单号”相关`，与`“产品号”无关`，这样就`不满足第二范式`的要求，调整如下，需分成两个表：
+
+![满足第二范式](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%BB%A1%E8%B6%B3%E7%AC%AC%E4%BA%8C%E8%8C%83%E5%BC%8F.png)
 
 
 
@@ -1680,32 +2155,32 @@ source d:/c.sql
 
 前提：满足第一范式和第二范式
 
-确保数据表中的每一列数据都==和主键直接相关==，而不能间接相关
+在2NF基础上，`任何非主属性不依赖于其它非主属性`（在2NF基础上`消除传递依赖`）
 
+`第三范式`确保数据表中的每一列数据都`和主键直接相关`，而`不能间接相关`
 
+例子：
 
-举例说明：
+![不满足第三范式](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%B8%8D%E6%BB%A1%E8%B6%B3%E7%AC%AC%E4%B8%89%E8%8C%83%E5%BC%8F.png)
 
-![img](https://images2018.cnblogs.com/blog/1218459/201809/1218459-20180909211311408-1364899740.png)
+上表中，所有属性都完全依赖于学号，所以满足第二范式，但是“班主任性别”和“班主任年龄”直接依赖的是“班主任姓名”，而不是主键“学号”，所以需做如下调整：
 
-上表中，所有属性都完全依赖于学号，所以满足第二范式，但是“班主任性别”和“班主任年龄”直接依赖的是“班主任姓名”，
-
-而不是主键“学号”，所以需做如下调整：
-
-![img](https://images2018.cnblogs.com/blog/1218459/201809/1218459-20180909211539242-1391100354.png) ![img](https://images2018.cnblogs.com/blog/1218459/201809/1218459-20180909211602202-1069383439.png)
+![满足第三范式](/images/Mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%BB%A1%E8%B6%B3%E7%AC%AC%E4%B8%89%E8%8C%83%E5%BC%8F.png) 
 
 这样以来，就满足了第三范式的要求。
 
-ps:如果把上表中的班主任姓名改成班主任教工号可能更确切，更符合实际情况，不过只要能理解就行。
+**ps：**如果把上表中的班主任姓名改成班主任教工号可能更确切，更符合实际情况，不过只要能理解就行。
 
 
+
+（规范数据库设计）
 
 **规范性和性能的问题**
 
 关联查询的表不能超过三张表
 
-* 考虑商业化的需求和 目标（成本，用户体验），考虑数据库的性能
-* 在规范性能问题的时候，设当考虑一下数据库的规范性
+* 考虑商业化的需求和目标（成本，用户体验），考虑数据库的性能更重要
+* 在规范性能问题的时候，适当考虑一下数据库的规范性
 * 故意给某些表增加一些冗余的字段（从多表查询变为单表查询）
 * 故意增加一些计算列（从大数据降为小数据量的查询：==索引==）
 
