@@ -1,8 +1,8 @@
 ---
-title: Mysql学习笔记
+title: MySQL学习笔记1
 date: 2020-07-18 22:14:51
 tags: ['狂神']
-categories: ['Mysql']
+categories: ['MySQL']
 typora-root-url: ..
 ---
 
@@ -1835,7 +1835,9 @@ EXPLAIN SELECT * FROM `app_user` WHERE `name` = '用户9999';
 
 ### 7.4.为什么索引能提高查询速度
 
-博客： [https://github.com/GokuDU/JavaGuide/blob/master/docs/database/MySQL%20Index.md](https://github.com/GokuDU/JavaGuide/blob/master/docs/database/MySQL Index.md)
+博客： 
+[数据库索引总结](https://github.com/Light-Alex/JavaGuide/blob/master/docs/database/MySQL%20Index.md)
+[数据库两大神器【索引和锁】](https://juejin.im/post/5b55b842f265da0f9e589e79)
 
 ![MySQL的基本存储结构是页](https://camo.githubusercontent.com/57a746bf254e100c3fd0d2691d172df5c29592eb/687474703a2f2f6d792d626c6f672d746f2d7573652e6f73732d636e2d6265696a696e672e616c6979756e63732e636f6d2f31382d31302d322f32383535393432312e6a7067)
 
