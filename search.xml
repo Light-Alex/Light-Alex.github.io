@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Git查看或修改用户名和邮箱并实现GitHub免密登录</title>
+    <url>/2020/07/19/Git%E6%9F%A5%E7%9C%8B%E6%88%96%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E9%82%AE%E7%AE%B1%E5%B9%B6%E5%AE%9E%E7%8E%B0GitHub%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95/</url>
+    <content><![CDATA[<h1 id="查看用户名"><a href="#查看用户名" class="headerlink" title="查看用户名"></a>查看用户名</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config user.name</span><br></pre></td></tr></table></figure>
+<h1 id="查看邮箱"><a href="#查看邮箱" class="headerlink" title="查看邮箱"></a>查看邮箱</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config user.email</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h1 id="修改用户名"><a href="#修改用户名" class="headerlink" title="修改用户名"></a>修改用户名</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">'Jack'</span></span><br></pre></td></tr></table></figure>
+<h1 id="修改邮箱"><a href="#修改邮箱" class="headerlink" title="修改邮箱"></a>修改邮箱</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.email <span class="string">'Jack@mail.com'</span></span><br></pre></td></tr></table></figure>
+<h1 id="生成SSH密钥"><a href="#生成SSH密钥" class="headerlink" title="生成SSH密钥"></a>生成SSH密钥</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+<p>该命令执行完后会在<code>.ssh</code>目录下面生成公钥(id_rsa.pub)和私钥(id_rsa)。</p>
+<h1 id="GitHub免密登录"><a href="#GitHub免密登录" class="headerlink" title="GitHub免密登录"></a>GitHub免密登录</h1><p><img src="/images/Git%E6%9F%A5%E7%9C%8B%E6%88%96%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E9%82%AE%E7%AE%B1%E5%B9%B6%E5%AE%9E%E7%8E%B0GitHub%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95/github%E4%B8%AD%E6%B7%BB%E5%8A%A0ssh%20keys%E5%AE%9E%E7%8E%B0%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95.png" alt="github中添加ssh keys实现免密登录"></p>
+<p>在Title处给该公钥取个名称，在Key部分将<code>id_rsa.pub</code>文件内容添加进去，然后点击“Add SSH key”按钮完成配置。</p>
+<h1 id="验证是否成功"><a href="#验证是否成功" class="headerlink" title="验证是否成功"></a>验证是否成功</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<p>输出以下内容说明配置成功！</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Hi username! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</span><br></pre></td></tr></table></figure>
+<h1 id="重新设置origin"><a href="#重新设置origin" class="headerlink" title="重新设置origin"></a>重新设置origin</h1><p>删除并重新添加：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rm origin</span><br><span class="line">git remote add origin git@github.com:username/repository.git</span><br></pre></td></tr></table></figure>
+<p>查看origin的地址：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v</span><br></pre></td></tr></table></figure>
+<p>输出以下内容，说明已经改为SSH的方式了！</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">origin git@github.com:username&#x2F;repository.git (fetch)</span><br><span class="line">origin git@github.com:username&#x2F;repository.git (push)</span><br></pre></td></tr></table></figure>
+<p><strong>这样push和pull操作就不用重新登录GitHub了!</strong></p>
+]]></content>
+      <categories>
+        <category>Git</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+        <tag>GitHub</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>B树和B+树</title>
     <url>/2020/07/30/B%E6%A0%91%E5%92%8CB+%E6%A0%91/</url>
     <content><![CDATA[<h1 id="2-3树"><a href="#2-3树" class="headerlink" title="2-3树"></a>2-3树</h1><p>概念：<strong>2-3树</strong>是一种<strong>多路查找树</strong>：2和3的意思是2-3树包含两种结点：</p>
@@ -117,34 +148,23 @@
       </tags>
   </entry>
   <entry>
-    <title>Git查看或修改用户名和邮箱并实现GitHub免密登录</title>
-    <url>/2020/07/19/Git%E6%9F%A5%E7%9C%8B%E6%88%96%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E9%82%AE%E7%AE%B1%E5%B9%B6%E5%AE%9E%E7%8E%B0GitHub%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95/</url>
-    <content><![CDATA[<h1 id="查看用户名"><a href="#查看用户名" class="headerlink" title="查看用户名"></a>查看用户名</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config user.name</span><br></pre></td></tr></table></figure>
-<h1 id="查看邮箱"><a href="#查看邮箱" class="headerlink" title="查看邮箱"></a>查看邮箱</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config user.email</span><br></pre></td></tr></table></figure>
+    <title>Hexo个人博客next主题使用LaTex公式</title>
+    <url>/2020/08/01/Hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2next%E4%B8%BB%E9%A2%98%E4%BD%BF%E7%94%A8LaTex%E5%85%AC%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="第一步-更换Hexo默认渲染引擎"><a href="#第一步-更换Hexo默认渲染引擎" class="headerlink" title="第一步 更换Hexo默认渲染引擎"></a>第一步 更换Hexo默认渲染引擎</h1><p>hexo 默认的渲染引擎是 marked，但是 marked 不支持 mathjax。所以需要更换Hexo的markdown渲染引擎为hexo-renderer-kramed引擎，后者支持mathjax公式输出。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm uninstall hexo-renderer-marked --save</span><br><span class="line">npm install hexo-renderer-kramed --save</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<h1 id="修改用户名"><a href="#修改用户名" class="headerlink" title="修改用户名"></a>修改用户名</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">'Jack'</span></span><br></pre></td></tr></table></figure>
-<h1 id="修改邮箱"><a href="#修改邮箱" class="headerlink" title="修改邮箱"></a>修改邮箱</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.email <span class="string">'Jack@mail.com'</span></span><br></pre></td></tr></table></figure>
-<h1 id="生成SSH密钥"><a href="#生成SSH密钥" class="headerlink" title="生成SSH密钥"></a>生成SSH密钥</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
-<p>该命令执行完后会在<code>.ssh</code>目录下面生成公钥(id_rsa.pub)和私钥(id_rsa)。</p>
-<h1 id="GitHub免密登录"><a href="#GitHub免密登录" class="headerlink" title="GitHub免密登录"></a>GitHub免密登录</h1><p><img src="/images/Git%E6%9F%A5%E7%9C%8B%E6%88%96%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E9%82%AE%E7%AE%B1%E5%B9%B6%E5%AE%9E%E7%8E%B0GitHub%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95/github%E4%B8%AD%E6%B7%BB%E5%8A%A0ssh%20keys%E5%AE%9E%E7%8E%B0%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95.png" alt="github中添加ssh keys实现免密登录"></p>
-<p>在Title处给该公钥取个名称，在Key部分将<code>id_rsa.pub</code>文件内容添加进去，然后点击“Add SSH key”按钮完成配置。</p>
-<h1 id="验证是否成功"><a href="#验证是否成功" class="headerlink" title="验证是否成功"></a>验证是否成功</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
-<p>输出以下内容说明配置成功！</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Hi username! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</span><br></pre></td></tr></table></figure>
-<h1 id="重新设置origin"><a href="#重新设置origin" class="headerlink" title="重新设置origin"></a>重新设置origin</h1><p>删除并重新添加：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rm origin</span><br><span class="line">git remote add origin git@github.com:username/repository.git</span><br></pre></td></tr></table></figure>
-<p>查看origin的地址：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v</span><br></pre></td></tr></table></figure>
-<p>输出以下内容，说明已经改为SSH的方式了！</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">origin git@github.com:username&#x2F;repository.git (fetch)</span><br><span class="line">origin git@github.com:username&#x2F;repository.git (push)</span><br></pre></td></tr></table></figure>
-<p><strong>这样push和pull操作就不用重新登录GitHub了!</strong></p>
+<h1 id="第二步-在你的hexo主题文件夹下的配置文件中激活mathjax"><a href="#第二步-在你的hexo主题文件夹下的配置文件中激活mathjax" class="headerlink" title="第二步 在你的hexo主题文件夹下的配置文件中激活mathjax"></a>第二步 在你的hexo主题文件夹下的配置文件中激活mathjax</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#文件路径</span></span><br><span class="line">/blog/themes/next/config.yml</span><br><span class="line"></span><br><span class="line"><span class="comment">#修改内容</span></span><br><span class="line"><span class="comment"># Math Formulas Render Support</span></span><br><span class="line">math:</span><br><span class="line">  <span class="comment"># Default (true) will load mathjax / katex script on demand.</span></span><br><span class="line">  <span class="comment"># That is it only render those page which has `mathjax: true` in Front-matter.</span></span><br><span class="line">  <span class="comment"># If you set it to false, it will load mathjax / katex srcipt EVERY PAGE.</span></span><br><span class="line">  per_page: <span class="literal">false</span> <span class="comment"># 改为false</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># hexo-renderer-pandoc (or hexo-renderer-kramed) required for full MathJax support.</span></span><br><span class="line">  mathjax:</span><br><span class="line">    <span class="built_in">enable</span>: <span class="literal">true</span> <span class="comment"># 改为true</span></span><br><span class="line">    <span class="comment"># See: https://mhchem.github.io/MathJax-mhchem/</span></span><br><span class="line">    mhchem: <span class="literal">true</span> <span class="comment"># 改为true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># hexo-renderer-markdown-it-plus (or hexo-renderer-markdown-it with markdown-it-katex plugin) required for full Katex support.</span></span><br><span class="line">  katex:</span><br><span class="line">    <span class="built_in">enable</span>: <span class="literal">false</span></span><br><span class="line">    <span class="comment"># See: https://github.com/KaTeX/KaTeX/tree/master/contrib/copy-tex</span></span><br><span class="line">    copy_tex: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<h1 id="第三步-修改kramed语法解释"><a href="#第三步-修改kramed语法解释" class="headerlink" title="第三步 修改kramed语法解释"></a>第三步 修改kramed语法解释</h1><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">#文件路径</span><br><span class="line">/blog/node_modules/kramed/lib/rules/inline.js </span><br><span class="line"></span><br><span class="line">#修改内容</span><br><span class="line">#只修改了escape/em</span><br><span class="line"><span class="keyword">var</span> inline = &#123;</span><br><span class="line">  <span class="comment">// escape: /^\\([\\`*&#123;&#125;\[\]()#$+\-.!_&gt;])/,</span></span><br><span class="line">  escape: /^\\([`*\[\]()#$+\-.!_&gt;])/,  # 修改escape</span><br><span class="line">  autolink: <span class="regexp">/^&lt;([^ &gt;]+(@|:\/)[^ &gt;]+)&gt;/</span>,</span><br><span class="line">  url: noop,</span><br><span class="line">  html: <span class="regexp">/^&lt;!--[\s\S]*?--&gt;|^&lt;(\w+(?!:\/|[^\w\s@]*@)\b)*?(?:"[^"]*"|'[^']*'|[^'"&gt;])*?&gt;([\s\S]*?)?&lt;\/\1&gt;|^&lt;(\w+(?!:\/|[^\w\s@]*@)\b)(?:"[^"]*"|'[^']*'|[^'"&gt;])*?&gt;/</span>,</span><br><span class="line">  link: <span class="regexp">/^!?\[(inside)\]\(href\)/</span>,</span><br><span class="line">  reflink: <span class="regexp">/^!?\[(inside)\]\s*\[([^\]]*)\]/</span>,</span><br><span class="line">  nolink: <span class="regexp">/^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/</span>,</span><br><span class="line">  reffn: <span class="regexp">/^!?\[\^(inside)\]/</span>,</span><br><span class="line">  strong: <span class="regexp">/^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/</span>,</span><br><span class="line">  <span class="comment">// em: /^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,</span></span><br><span class="line">  em: /^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,  # 修改em</span><br><span class="line">  code: <span class="regexp">/^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/</span>,</span><br><span class="line">  br: <span class="regexp">/^ &#123;2,&#125;\n(?!\s*$)/</span>,</span><br><span class="line">  del: noop,</span><br><span class="line">  text: <span class="regexp">/^[\s\S]+?(?=[\\&lt;!\[_*`$]| &#123;2,&#125;\n|$)/</span>,</span><br><span class="line">  math: <span class="regexp">/^\$\$\s*([\s\S]*?[^\$])\s*\$\$(?!\$)/</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="第四步-在你的markdown文本开头添加语句"><a href="#第四步-在你的markdown文本开头添加语句" class="headerlink" title="第四步 在你的markdown文本开头添加语句"></a>第四步 在你的markdown文本开头添加语句</h1><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="section">#添加在开头</span></span><br><span class="line">mathjax: true</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2next%E4%B8%BB%E9%A2%98%E4%BD%BF%E7%94%A8LaTex%E5%85%AC%E5%BC%8F/%E8%AE%BE%E7%BD%AEmathjax.png" alt="设置mathjax"></p>
+<h1 id="第五步-完成"><a href="#第五步-完成" class="headerlink" title="第五步 完成"></a>第五步 完成</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://www.jianshu.com/p/24a5abb2be98" target="_blank" rel="noopener">hexo个人博客next主题使用LaTeX公式</a></p>
 ]]></content>
       <categories>
-        <category>Git</category>
+        <category>Hexo</category>
       </categories>
       <tags>
-        <tag>Git</tag>
-        <tag>GitHub</tag>
+        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -524,7 +544,7 @@
   <entry>
     <title>进程和线程的区别</title>
     <url>/2020/08/01/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
-    <content><![CDATA[<h1 id="形象理解"><a href="#形象理解" class="headerlink" title="形象理解"></a>形象理解</h1><p>1.计算机的核心是CPU，它承担了所有的计算任务。它就像一座工厂，时刻在运行。</p>
+    <content><![CDATA[<h1 id="形象理解1"><a href="#形象理解1" class="headerlink" title="形象理解1"></a>形象理解1</h1><p>1.计算机的核心是CPU，它承担了所有的计算任务。它就像一座工厂，时刻在运行。</p>
 <p>2.假定工厂的电力有限，一次只能供给一个车间使用。也就是说，一个车间开工的时候，其他车间都必须停工。背后的含义就是，单个CPU一次只能运行一个任务。</p>
 <p>3.进程就好比工厂的车间，它代表CPU所能处理的单个任务。任一时刻，CPU总是运行一个进程，其他进程处于非运行状态。</p>
 <a id="more"></a>
@@ -537,6 +557,19 @@
 <p>10.这时的解决方法，就是在门口挂n把钥匙。进去的人就取一把钥匙，出来时再把钥匙挂回原处。后到的人发现钥匙架空了，就知道必须在门口排队等着了。这种做法叫做<a href="https://link.zhihu.com/?target=http%3A//en.wikipedia.org/wiki/Semaphore_(programming">“</a>)信号量”（Semaphore），用来保证多个线程不会互相冲突。</p>
 <p>不难看出，mutex是semaphore的一种特殊情况（n=1时）。也就是说，完全可以用后者替代前者。但是，因为mutex较为简单，且效率高，所以在必须保证资源独占的情况下，还是采用这种设计。</p>
 <p>11.操作系统的设计，因此可以归结为三点：<br>（1）以多进程形式，允许多个任务同时运行；<br>（2）以多线程形式，允许单个任务分成不同的部分运行；<br>（3）提供协调机制，一方面防止进程之间和线程之间产生冲突，另一方面允许进程之间和线程之间共享资源。</p>
+<h1 id="形象理解2"><a href="#形象理解2" class="headerlink" title="形象理解2"></a>形象理解2</h1><p>类似”<strong>进程是资源分配的最小单位，线程是CPU调度的最小单位“</strong>这样的回答感觉太抽象，都不太容易让人理解。</p>
+<p>做个简单的比喻：进程=火车，线程=车厢</p>
+<ul>
+<li>线程在进程下行进（单纯的车厢无法运行）</li>
+<li>一个进程可以包含多个线程（一辆火车可以有多个车厢）</li>
+<li>不同进程间数据很难共享（一辆火车上的乘客很难换到另外一辆火车，比如站点换乘）</li>
+<li>同一进程下不同线程间数据很易共享（A车厢换到B车厢很容易）</li>
+<li>进程要比线程消耗更多的计算机资源（采用多列火车相比多个车厢更耗资源）</li>
+<li>进程间不会相互影响，一个线程挂掉将导致整个进程挂掉（一列火车不会影响到另外一列火车，但是如果一列火车上中间的一节车厢着火了，将影响到所有车厢）</li>
+<li>进程可以拓展到多机，进程最多适合多核（不同火车可以开在多个轨道上，同一火车的车厢不能在行进的不同的轨道上）</li>
+<li>进程使用的内存地址可以上锁，即一个线程使用某些共享内存时，其他线程必须等它结束，才能使用这一块内存。（比如火车上的洗手间）－”互斥锁”</li>
+<li>进程使用的内存地址可以限定使用量（比如火车上的餐厅，最多只允许多少人进入，如果满了需要在门口等，等有人出来了才能进去）－“信号量”</li>
+</ul>
 <h1 id="简介论述"><a href="#简介论述" class="headerlink" title="简介论述"></a>简介论述</h1><p><strong>（1）进程</strong></p>
 <p>进程是程序的一次执行过程，是一个动态概念，是程序在执行过程中分配和管理资源的基本单位，每一个进程都有一个自己的地址空间，至少有 5 种基本状态，它们是：创建状态，就绪状态，执行状态，阻塞状态，终止状态。</p>
 <p><img src="/images/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB/%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%BA%94%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%8A%B6%E6%80%81%E5%8F%8A%E8%BD%AC%E6%8D%A2.png" alt="进程的五种基本状态及转换"></p>
@@ -571,6 +604,7 @@
 <p><strong>隔离</strong>也是并发之后要解决的重要问题，计算机的资源一般是共享的，隔离要能保障崩溃了这些资源能够被回收，不影响其他代码的使用。所以说一个操作系统只有线程没有进程也是可以的，只是这样的系统会经常崩溃而已，操作系统刚开始发展的时候和这种情形很像。</p>
 <p><strong>好处：</strong>线程和并发有关系，进程和隔离有关系。线程基本是为了代码并发执行引入的概念，因为要分配CPU时间片，暂停后再恢复要能够继续和没暂停一样继续执行；进程相当于一堆线程加上线程执行过程中申请的资源，一旦挂了，这些资源都要能回收，不影响其他程序。</p>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://zhuanlan.zhihu.com/p/46410285" target="_blank" rel="noopener">每个程序员都会遇到的面试问题：谈谈进程和线程的区别</a></p>
+<p><a href="https://www.zhihu.com/answer/411179772" target="_blank" rel="noopener">线程和进程的区别是什么？</a></p>
 ]]></content>
       <categories>
         <category>操作系统</category>
@@ -578,26 +612,6 @@
       <tags>
         <tag>进程</tag>
         <tag>线程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo个人博客next主题使用LaTex公式</title>
-    <url>/2020/08/01/Hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2next%E4%B8%BB%E9%A2%98%E4%BD%BF%E7%94%A8LaTex%E5%85%AC%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="第一步-更换Hexo默认渲染引擎"><a href="#第一步-更换Hexo默认渲染引擎" class="headerlink" title="第一步 更换Hexo默认渲染引擎"></a>第一步 更换Hexo默认渲染引擎</h1><p>hexo 默认的渲染引擎是 marked，但是 marked 不支持 mathjax。所以需要更换Hexo的markdown渲染引擎为hexo-renderer-kramed引擎，后者支持mathjax公式输出。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm uninstall hexo-renderer-marked --save</span><br><span class="line">npm install hexo-renderer-kramed --save</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h1 id="第二步-在你的hexo主题文件夹下的配置文件中激活mathjax"><a href="#第二步-在你的hexo主题文件夹下的配置文件中激活mathjax" class="headerlink" title="第二步 在你的hexo主题文件夹下的配置文件中激活mathjax"></a>第二步 在你的hexo主题文件夹下的配置文件中激活mathjax</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#文件路径</span></span><br><span class="line">/blog/themes/next/config.yml</span><br><span class="line"></span><br><span class="line"><span class="comment">#修改内容</span></span><br><span class="line"><span class="comment"># Math Formulas Render Support</span></span><br><span class="line">math:</span><br><span class="line">  <span class="comment"># Default (true) will load mathjax / katex script on demand.</span></span><br><span class="line">  <span class="comment"># That is it only render those page which has `mathjax: true` in Front-matter.</span></span><br><span class="line">  <span class="comment"># If you set it to false, it will load mathjax / katex srcipt EVERY PAGE.</span></span><br><span class="line">  per_page: <span class="literal">false</span> <span class="comment"># 改为false</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># hexo-renderer-pandoc (or hexo-renderer-kramed) required for full MathJax support.</span></span><br><span class="line">  mathjax:</span><br><span class="line">    <span class="built_in">enable</span>: <span class="literal">true</span> <span class="comment"># 改为true</span></span><br><span class="line">    <span class="comment"># See: https://mhchem.github.io/MathJax-mhchem/</span></span><br><span class="line">    mhchem: <span class="literal">true</span> <span class="comment"># 改为true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># hexo-renderer-markdown-it-plus (or hexo-renderer-markdown-it with markdown-it-katex plugin) required for full Katex support.</span></span><br><span class="line">  katex:</span><br><span class="line">    <span class="built_in">enable</span>: <span class="literal">false</span></span><br><span class="line">    <span class="comment"># See: https://github.com/KaTeX/KaTeX/tree/master/contrib/copy-tex</span></span><br><span class="line">    copy_tex: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-<h1 id="第三步-修改kramed语法解释"><a href="#第三步-修改kramed语法解释" class="headerlink" title="第三步 修改kramed语法解释"></a>第三步 修改kramed语法解释</h1><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">#文件路径</span><br><span class="line">/blog/node_modules/kramed/lib/rules/inline.js </span><br><span class="line"></span><br><span class="line">#修改内容</span><br><span class="line">#只修改了escape/em</span><br><span class="line"><span class="keyword">var</span> inline = &#123;</span><br><span class="line">  <span class="comment">// escape: /^\\([\\`*&#123;&#125;\[\]()#$+\-.!_&gt;])/,</span></span><br><span class="line">  escape: /^\\([`*\[\]()#$+\-.!_&gt;])/,  # 修改escape</span><br><span class="line">  autolink: <span class="regexp">/^&lt;([^ &gt;]+(@|:\/)[^ &gt;]+)&gt;/</span>,</span><br><span class="line">  url: noop,</span><br><span class="line">  html: <span class="regexp">/^&lt;!--[\s\S]*?--&gt;|^&lt;(\w+(?!:\/|[^\w\s@]*@)\b)*?(?:"[^"]*"|'[^']*'|[^'"&gt;])*?&gt;([\s\S]*?)?&lt;\/\1&gt;|^&lt;(\w+(?!:\/|[^\w\s@]*@)\b)(?:"[^"]*"|'[^']*'|[^'"&gt;])*?&gt;/</span>,</span><br><span class="line">  link: <span class="regexp">/^!?\[(inside)\]\(href\)/</span>,</span><br><span class="line">  reflink: <span class="regexp">/^!?\[(inside)\]\s*\[([^\]]*)\]/</span>,</span><br><span class="line">  nolink: <span class="regexp">/^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/</span>,</span><br><span class="line">  reffn: <span class="regexp">/^!?\[\^(inside)\]/</span>,</span><br><span class="line">  strong: <span class="regexp">/^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/</span>,</span><br><span class="line">  <span class="comment">// em: /^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,</span></span><br><span class="line">  em: /^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,  # 修改em</span><br><span class="line">  code: <span class="regexp">/^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/</span>,</span><br><span class="line">  br: <span class="regexp">/^ &#123;2,&#125;\n(?!\s*$)/</span>,</span><br><span class="line">  del: noop,</span><br><span class="line">  text: <span class="regexp">/^[\s\S]+?(?=[\\&lt;!\[_*`$]| &#123;2,&#125;\n|$)/</span>,</span><br><span class="line">  math: <span class="regexp">/^\$\$\s*([\s\S]*?[^\$])\s*\$\$(?!\$)/</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="第四步-在你的markdown文本开头添加语句"><a href="#第四步-在你的markdown文本开头添加语句" class="headerlink" title="第四步 在你的markdown文本开头添加语句"></a>第四步 在你的markdown文本开头添加语句</h1><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="section">#添加在开头</span></span><br><span class="line">mathjax: true</span><br></pre></td></tr></table></figure>
-<p><img src="/images/Hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2next%E4%B8%BB%E9%A2%98%E4%BD%BF%E7%94%A8LaTex%E5%85%AC%E5%BC%8F/%E8%AE%BE%E7%BD%AEmathjax.png" alt="设置mathjax"></p>
-<h1 id="第五步-完成"><a href="#第五步-完成" class="headerlink" title="第五步 完成"></a>第五步 完成</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://www.jianshu.com/p/24a5abb2be98" target="_blank" rel="noopener">hexo个人博客next主题使用LaTeX公式</a></p>
-]]></content>
-      <categories>
-        <category>Hexo</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
