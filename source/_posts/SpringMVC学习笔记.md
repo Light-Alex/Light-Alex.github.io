@@ -1147,3 +1147,94 @@ public class UserController2 {
 * jQuery Ajax本质就是XMLHttpRequest，对他进行了封装，方便调用！
 
 ![ajax](/images/SpringMVC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ajax.png)
+
+
+
+
+
+# SpringMVC: 拦截器
+
+## 概述
+
+SpringMVC处理器拦截器类似于Servlet开发中的过滤器Filter，用于对处理器进行预处理和后处理。开发者可以自定义一些拦截器来实现特定的功能。
+
+## 过滤器和拦截器的区别
+
+### 过滤器（Filter）
+
+* servlet规范中的一部分，任何java web工程都可以使用
+* 在url-pattern中配置/*后，可以对所有要访问的资源进行拦截
+
+## 拦截器（Interceptor）
+
+* 拦截器是AOP思想的具体应用
+* 拦截器是SpringMVC框架自己的，只有使用了SpringMVC框架的工程才可以使用
+* 拦截器只会拦截访问控制器的方法，如果访问的是jsp/html/image/js不会进行拦截
+
+## 补充
+
+1.过滤器：
+
+依赖于servlet容器。在实现上基于函数回调，可以对几乎所有请求进行过滤，但是缺点是一个过滤器实例只能在容器初始化时调用一次。使用过滤器的目的是用来做一些过滤操作，获取我们想要获取的数据，比如：在过滤器中修改字符编码；在过滤器中修改HttpServletRequest的一些参数，包括：过滤低俗文字、危险字符等
+
+2.拦截器：
+
+依赖于web框架，在SpringMVC中就是依赖于SpringMVC框架。在实现上基于[Java](https://link.jianshu.com?t=http%3A%2F%2Fwww.07net01.com%2Ftags-Java-0.html)的反射机制，属于面向切面编程（AOP）的一种运用。由于拦截器是基于web框架的调用，因此可以使用Spring的依赖注入（DI）进行一些业务操作，同时一个拦截器实例在一个controller生命周期之内可以多次调用。但是缺点是只能对controller请求进行拦截，对其他的一些比如直接访问静态资源的请求则没办法进行拦截处理
+
+3.过滤器和拦截器的区别：
+
+**①拦截器是基于java的反射机制的，而过滤器是基于函数回调。**
+
+②拦截器不依赖与servlet容器，过滤器依赖与servlet容器。
+
+③拦截器只能对action请求起作用，而过滤器则可以对几乎所有的请求起作用。
+
+④拦截器可以访问action上下文、值栈里的对象，而过滤器不能访问。
+
+⑤在action的生命周期中，拦截器可以多次被调用，而过滤器只能在容器初始化时被调用一次。
+
+**⑥拦截器可以获取IOC容器中的各个bean，而过滤器就不行，这点很重要，在拦截器里注入一个service，可以调用业务逻辑。**
+
+
+
+# 文件上传
+
+## 准备工作
+
+SpringMVC上文中默认没有装配MultipartResolver，因此默认情况下不能处理文件上传工作。如果想使用Spring的文件上传功能，需要在上下文中配置MultipartResolver。
+
+## 前端表单要求
+
+为了能上传文件，必须将表单的method设置为POST，并将enctype设置为multipart/form-data。只有在这样的情况下，浏览器才会把用户选择的文件以二进制数据的形式发送给服务器。
+
+## 表单中enctype的属性
+
+* application/x-www=form-ulencoded：默认方式，只处理表单域中的value属性值，采用这种编码方式的表单会将表单域中的值处理成URL编码方式。
+* multipart/form-data：这种编码方式会以二进制流的方式来处理表单数据，这种编码方式会把文件域指定文件的内容也封装到请求参数中，不会对字符编码。
+* text/plain：除了把空格转换为"+"号外，其他字符都不做编码处理，这种方式适用直接通过表单发送邮件。
+
+```html
+<form action="" enctype="multipart/form-data" method="post">
+    <input type="file" name="file"/>
+    <input type="submit"/>
+</form>
+```
+
+## Maven依赖
+
+```xml
+<!--文件上传-->
+<dependency>
+    <groupId>commons-fileupload</groupId>
+    <artifactId>commons-fileupload</artifactId>
+    <version>1.3.3</version>
+</dependency>
+
+<!--导入高版本的servlet-api-->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.1</version>
+</dependency>
+```
+
